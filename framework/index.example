@@ -1,0 +1,12 @@
+import container from './application/config/Container';
+import Application from './application/application';
+
+const dotenv = require('dotenv');
+dotenv.config();
+
+const app = container.resolve('app') as Application;
+
+app.start().catch(error => {
+  console.log(error);
+  process.exit();
+});
