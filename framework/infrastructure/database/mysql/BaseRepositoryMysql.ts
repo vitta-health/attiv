@@ -1,7 +1,8 @@
 import IRepositoryGeneric from '../IRepositoryGeneric';
+import { Model } from 'sequelize';
 
-export abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
-  private model: any;
+export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
+  private model: Model<any, any>;
 
   constructor(model: any) {
     this.model = model;

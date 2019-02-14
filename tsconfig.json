@@ -9,10 +9,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/*.ts" //which kind of files to compile
-  ],
+  "include": ["**/*"],
   "exclude": [
     "node_modules" //which files or directories to ignore
   ]

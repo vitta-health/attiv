@@ -1,7 +1,7 @@
 import IGeneric from './IGeneric';
 import IRepositoryGeneric from '../../infrastructure/database/IRepositoryGeneric';
 
-export abstract class GenericImpl<T> implements IGeneric<T> {
+export default abstract class GenericImpl<T> implements IGeneric<T> {
   private genericRepository: IRepositoryGeneric<T>;
 
   constructor(genericRepository: IRepositoryGeneric<T>) {

@@ -2,7 +2,7 @@ import IRepositoryGeneric from '../IRepositoryGeneric';
 import { Mongoose } from 'mongoose';
 import { APIError } from '../../../crosscutting/exceptions/APIError';
 
-export abstract class BaseRepositoryMongo<T> implements IRepositoryGeneric<T> {
+export default abstract class BaseRepositoryMongo<T> implements IRepositoryGeneric<T> {
   private model: any;
 
   constructor(model: any) {
