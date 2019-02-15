@@ -12,7 +12,7 @@ export function ErrorHandler(err: any, req: Request, res, next: NextFunction) {
 
   response.status = 500;
   response.message = messages.errorHandler.SERVER_ERROR;
-  response.detais = err;
+  response.detais = err.stack;
 
   if (err instanceof NotFoundError) {
     response.status = 404;
