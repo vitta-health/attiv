@@ -5,7 +5,7 @@ import GenericController from './application/controllers/generic/GenericControll
 import IGenericController from './application/controllers/generic/IGenericController';
 
 const router = require('./application/routes/index');
-//const LoggerMiddleware = require('./application/logging/LoggerMiddleware');
+const LoggerMiddleware = require('./application/logging/LoggerMiddleware');
 
 const LoggerStreamAdapter = require('./crosscutting/logging/LoggerStreamAdapter');
 const Logger = require('./crosscutting/logging/logger');
@@ -41,6 +41,7 @@ export {
   NotFoundError,
   ObjectNotFoundError,
   RepositoryError,
+  LoggerMiddleware,
   UnauthenticatedError,
   ValidationError,
   LoggerStreamAdapter,

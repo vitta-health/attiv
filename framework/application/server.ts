@@ -1,4 +1,6 @@
 import { ErrorHandler } from './errorHandler';
+import { NotFoundError } from '../crosscutting/exceptions/NotFoundError';
+import { NextFunction } from 'express';
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -14,6 +16,12 @@ class Server {
     this.express.use(cors);
     this.express.use(bodyParser);
     this.express.use(bodyParser.urlencoded({ extended: false }));
+
+    // catch 404 and forward to error handler
+    router.use('*', (req: Request, res: Response, next: NextFunction) => {
+      throw new NotFoundError();
+    });
+
     this.express.use(ErrorHandler);
   }
 

@@ -1,12 +1,12 @@
 {
   "name": "vitta-api",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "./dist/index.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "NODE_ENV=development nodemon ./framework/index.ts",
-    "test": "NODE_ENV=test nodemon ./framework/index.ts",
+    "dev": "NODE_ENV=development nodemon ./framework/test/application_start/index.ts",
+    "test": "NODE_ENV=test nodemon ./framework/test/application_start/index.ts",
     "start": "nodemon ./dist/boot.js",
     "prod": "npm run build && npm run start"
   },
@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/mongodb": "^3.1.19",
+    "@types/morgan": "^1.7.35",
     "@types/sequelize": "^4.27.35",
     "awilix": "^4.2.0",
     "awilix-express": "^2.1.1",
@@ -26,6 +27,7 @@
     "log4js": "^4.0.2",
     "mongodb": "^3.1.13",
     "mongoose": "^5.4.10",
+    "morgan": "^1.9.1",
     "mysql2": "^1.6.5",
     "sequelize": "^4.42.0"
   },
