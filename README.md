@@ -1,46 +1,42 @@
 # Attiv Node Framework
 
-###### [Tutorial em construção, ainda pode ter alguns erros que serão corrigidos nas proximas atualizações]
+### Conditions to follow this tutorial
 
-#### Framework em constante evolução e construção.
+For this tutorial to work, it is necessary to already have a pre-installed, configured mysql database and a created database.
 
-### Pré condições
+In addition, it is necessary to have the npm and node installed in the latest versions
 
-Para este tutorial funcionar, é necessario já estar com uma base de dados mysql pré instalado configurada e um banco de dados criado.
+### Installation
 
-Alem disso, é necessario ter o npm e node instalado nas versões mais recentes
+1 - Clone or repository
 
-### Instalação
+2 - Access the project you finished and clone
 
-1 - Clone o repositorio
-
-2 - Acesse o projeto que você acabou e clonar
-
-3 - Execute os seguintes comandos no diretorio raiz da aplicação
+3 - Execute the following commands in the root directory of the application
 
 ```shell
 npm install
 npm run postinstall
 ```
 
-Nesta etapa o framework já esta configurado e agora já é possivel referenciar seus arquivos usando o alias `vitta-api`
+In this step the framework is already configured and now it is already possible to reference your files using the alias `vitta-api`
 
-4 - Acesse o diretorio `example` e execute os comandos abaixo
+4 - Access the `example` directory and execute the commands below
 
 ```shell
 npm install
 ```
 
-5 - Altere o nome do arquivo `.env.example` para `.env`
+5 - Change the name of the `.env.example` file to`.env`
 
-6 - Altere as configurações do banco de dados no `.env`
+6 - Change the database settings in `.env`
 
-7 - Execute os seguintes comandos para criar as tabelas no mysql
+7 - Execute the following commands to create the tables in mysql
 
 ```shell
 node_modules/.bin/sequelize db:migrate
 ```
 
-- Se algum erro acontecer nesta etapa, revise a configuração do banco de dados
+- If any errors occur in this step, review the configuration of the database
 
-8 - Execute agora o comando `npm run dev` para executar a aplicação, se tudo correu bem sua api está no ar, usando o framework da Vitta.
+8 - Now run the `npm run dev` command to run the application, if everything went well your api is in the air, using the Vitta framework.

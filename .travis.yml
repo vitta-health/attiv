@@ -4,7 +4,6 @@ node_js:
   - '11.6.0'
 
 script: true
-tags: true
 
 after_success:
   - npm install
@@ -14,7 +13,7 @@ before_deploy:
   - cd lib
 deploy:
   provider: npm
-  email: elvis.souza@vitta.me
+  email: ti@vitta.me
   skip_cleanup: true
   api_key:
     secure: ${VITTA_KEY_NPM}
