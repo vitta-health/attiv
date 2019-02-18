@@ -4,6 +4,7 @@ node_js:
   - '11.6.0'
 
 script: true
+tags: true
 
 after_success:
   - npm run build #make a dist folder
