@@ -1,4 +1,4 @@
-import { BaseRepositoryMysql, IRepositoryGeneric } from 'vitta-api';
+import { BaseRepositoryMysql, IRepositoryGeneric } from 'attiv';
 import TaskDomain from '../../domain/task/entities/Task';
 import ITaskRepository from '../../domain/task/irepositories/ITaskRepository';
 

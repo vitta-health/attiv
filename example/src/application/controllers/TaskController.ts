@@ -1,4 +1,4 @@
-import { GenericController, IGenericController } from 'vitta-api';
+import { GenericController, IGenericController } from 'attiv';
 import ITaskService from '../../domain/task/services/interface/ITaskService';
 
 import { Router } from 'express';

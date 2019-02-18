@@ -1,4 +1,4 @@
-import { GenericImpl, IGeneric } from 'vitta-api';
+import { GenericImpl, IGeneric } from 'attiv';
 
 import ITaskService from '../interface/ITaskService';
 import Task from '../../entities/Task';

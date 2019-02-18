@@ -1,4 +1,4 @@
-import { IGeneric } from 'vitta-api';
+import { IGeneric } from 'attiv';
 
 import Task from '../../entities/Task';
 

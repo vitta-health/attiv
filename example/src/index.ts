@@ -1,4 +1,4 @@
-import { container, Application } from 'vitta-api';
+import { container, Application } from 'attiv';
 const { asClass } = require('awilix');
 import TaskController from './application/controllers/TaskController';
 import TaskService from './domain/task/services/implementation/TaskService';
