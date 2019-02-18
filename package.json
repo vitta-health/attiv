@@ -1,17 +1,24 @@
 {
-  "name": "vitta-api",
+  "name": "attiv",
   "version": "0.0.1",
-  "description": "",
-  "main": "./dist/index.ts",
+  "description": "Fast framework for software development using node",
+  "main": "./lib/index.ts",
+  "types": "./lib/index.d.ts",
   "scripts": {
     "build": "tsc",
     "postinstall": "link-module-alias"
   },
   "_moduleAliases": {
-    "vitta-api": "./framework"
+    "attiv": "./framework"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "framework",
+    "node",
+    "express",
+    "awilix",
+    "awilix-express"
+  ],
+  "author": "Vitta",
   "license": "ISC",
   "dependencies": {
     "@types/mongodb": "^3.1.19",
