@@ -5,8 +5,9 @@
   "main": "./lib/index.ts",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "postinstall": "link-module-alias"
+    "build": "tsc && copy",
+    "postinstall": "link-module-alias",
+    "copy": "cp package.json lib/ && cp README.md lib/"
   },
   "_moduleAliases": {
     "attiv": "./framework"
