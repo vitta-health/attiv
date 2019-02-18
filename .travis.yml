@@ -20,4 +20,4 @@ deploy:
   on:
     branch: master
     tags: true
-    repo: vitta-health/attiv-framework
+    repo: vitta-health/attiv
