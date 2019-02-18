@@ -13,7 +13,7 @@ before_deploy:
   - cd lib
 deploy:
   provider: npm
-  email: ti@vitta.me
+  email: elvis.souza@vitta.me
   skip_cleanup: true
   api_key:
     secure: ${VITTA_KEY_NPM}
