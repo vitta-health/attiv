@@ -3,6 +3,8 @@ language: node_js
 node_js:
   - '11.6.0'
 
+script: 'true'
+
 after_success:
   - npm run build #make a dist folder
 before_deploy:
