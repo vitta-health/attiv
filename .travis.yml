@@ -7,7 +7,9 @@ script: true
 tags: true
 
 after_success:
-  - npm run build #make a dist folder
+  - npm install
+  - npm run build
+  - npm run copy
 before_deploy:
   - cd lib
 deploy:

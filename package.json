@@ -5,7 +5,7 @@
   "main": "./lib/index.ts",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "build": "tsc && copy",
+    "build": "tsc",
     "postinstall": "link-module-alias",
     "copy": "cp package.json lib/ && cp README.md lib/"
   },
