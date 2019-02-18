@@ -18,6 +18,10 @@
     "awilix",
     "awilix-express"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vitta-health/vitta-framework.git"
+  },
   "author": "Vitta",
   "license": "ISC",
   "dependencies": {
