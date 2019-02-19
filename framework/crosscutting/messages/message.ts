@@ -10,6 +10,9 @@ const messages = {
   validateDbContext: {
     EXIST_TRANSACTION_OPEN: 'THERE IS OPEN TRANSACTION'
   },
+  DbContexto: {
+    NOT_TRANSACTION: 'NO TRANSACTION OPEN'
+  },
 };
 
 export default messages;

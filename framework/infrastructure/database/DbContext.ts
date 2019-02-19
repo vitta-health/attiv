@@ -1,4 +1,5 @@
 import {  Sequelize, Transaction} from 'sequelize';
+import messages from '../../crosscutting/messages/message'
 
 export default class DbContext
 {
@@ -30,7 +31,7 @@ export default class DbContext
 
     public commit()
     {
-      if (!this.transaction) throw new Error('Sem transação');
+      if (!this.transaction) throw new Error(messages.DbContexto.NOT_TRANSACTION);
 
       if(this.countTransaction == 1)
       {
@@ -42,7 +43,7 @@ export default class DbContext
 
     public rollback()
     {
-      if (!this.transaction) throw new Error('Sem transação');
+      if (!this.transaction) throw new Error(messages.DbContexto.NOT_TRANSACTION);
       if(this.countTransaction == 1)
       {
         this.transaction.rollback();
