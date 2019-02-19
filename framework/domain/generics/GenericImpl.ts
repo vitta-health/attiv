@@ -2,7 +2,7 @@ import IGeneric from './IGeneric';
 import IRepositoryGeneric from '../../infrastructure/database/IRepositoryGeneric';
 
 export default abstract class GenericImpl<T> implements IGeneric<T> {
-  private genericRepository: IRepositoryGeneric<T>;
+  protected genericRepository: IRepositoryGeneric<T>;
 
   constructor(genericRepository: IRepositoryGeneric<T>) {
     this.genericRepository = genericRepository;
@@ -14,7 +14,7 @@ export default abstract class GenericImpl<T> implements IGeneric<T> {
   async update(id: string, item: T) {
     return await this.genericRepository.update(id, item);
   }
-  async delete(id: string) {
+  async delete(id: string) { 
     return await this.genericRepository.delete(id);
   }
   async find(item: T) {

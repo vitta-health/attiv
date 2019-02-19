@@ -7,6 +7,9 @@ const messages = {
     BUSINESS_ERROR: 'BUSINESS ERROR',
     API_ERROR: 'API ERROR',
   },
+  validateDbContext: {
+    EXIST_TRANSACTION_OPEN: 'THERE IS OPEN TRANSACTION'
+  },
 };
 
 export default messages;

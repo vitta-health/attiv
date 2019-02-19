@@ -4,11 +4,12 @@ import ResponseRequest from '../../../crosscutting/util/ResponseRequest';
 import IGeneric from '../../../domain/generics/IGeneric';
 
 export default abstract class GenericController<T> implements IGenericController {
-  public _service: IGeneric<T>;
+  public nameService:string;
 
-  constructor(service: IGeneric<T>) {
-    this._service = service;
+  constructor(nameService: string) {
+    this.nameService = nameService;
   }
+
 
   public getRouter() {
     const router = Router();
@@ -20,10 +21,15 @@ export default abstract class GenericController<T> implements IGenericController
     return router;
   }
 
+  protected getService(req : any)
+  {
+    return req.container.resolve(this.nameService);
+  }
+
   async index(req: Request, res: Response, nextn) {
     try {
       const resRequest = new ResponseRequest();
-      resRequest.data = await this._service.getAll();
+      resRequest.data = await this.getService(req).getAll();
       return res.status(200).json(resRequest);
     } catch (ex) {
       nextn(ex);
@@ -32,7 +38,7 @@ export default abstract class GenericController<T> implements IGenericController
 
   async create(req: Request, res: Response, nextn) {
     try {
-      const data = await this._service.create(req.body);
+      const data = await this.getService(req).create(req.body);
       return res.status(200).json(data);
     } catch (ex) {
       nextn(ex);
@@ -41,7 +47,7 @@ export default abstract class GenericController<T> implements IGenericController
 
   async update(req: Request, res: Response, nextn) {
     try {
-      const data = await this._service.update(req.params.id, req.body);
+      const data = await this.getService(req).update(req.params.id, req.body);
       return res.status(200).json(data);
     } catch (ex) {
       nextn(ex);
@@ -50,7 +56,7 @@ export default abstract class GenericController<T> implements IGenericController
 
   async delete(req: Request, res: Response, nextn) {
     try {
-      const data = await this._service.delete(req.params.id);
+      const data = await this.getService(req).delete(req.params.id);
       return res.status(200).json(data);
     } catch (ex) {
       nextn(ex);

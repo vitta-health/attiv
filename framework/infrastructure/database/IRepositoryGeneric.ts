@@ -5,4 +5,7 @@ export default interface IRepositoryGeneric<T> {
   find(item: T);
   findOne(id: string);
   getAll();
+  beginTransaction();
+  commit();
+  rollback();
 }

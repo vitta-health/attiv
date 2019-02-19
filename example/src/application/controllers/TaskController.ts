@@ -4,11 +4,9 @@ import ITaskService from '../../domain/task/services/interface/ITaskService';
 import { Router } from 'express';
 
 export default class TaskController extends GenericController<ITaskService> implements IGenericController {
-  private _taskService: ITaskService;
-
-  constructor({ taskService }) {
-    super(taskService);
-    this._taskService = taskService;
+  
+  constructor() {
+    super('taskService');
   }
 
   public getRouter() {
@@ -21,7 +19,7 @@ export default class TaskController extends GenericController<ITaskService> impl
 
   async getAll(req: Request, res, nextn) {
     try {
-      return res.status(200).json(await this._taskService.getAll());
+      return res.status(200).json(await this.getService(req).getAll());
     } catch (ex) {
       nextn(ex);
     }
