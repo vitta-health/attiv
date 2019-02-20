@@ -25,6 +25,7 @@ const SchemaValidationJoi = require('./crosscutting/util/SchemaValidationJoi');
 
 import GenericImpl from './domain/generics/GenericImpl';
 import IGeneric from './domain/generics/IGeneric';
+import BaseEntity from './domain/generics/BaseEntity';
 
 import IRepositoryGeneric from './infrastructure/database/IRepositoryGeneric';
 import BaseRepositoryMysql from './infrastructure/database/mysql/BaseRepositoryMysql';
@@ -55,4 +56,5 @@ export {
   IRepositoryGeneric,
   BaseRepositoryMysql,
   BaseRepositoryMongo,
+  BaseEntity,
 };
