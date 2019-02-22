@@ -3,6 +3,13 @@ import { ValidationError } from '../../crosscutting/exceptions/ValidationError';
 import messages from '../../crosscutting/messages/message';
 
 export default abstract class BaseEntity {
+  constructor(args?) {
+    if (args) {
+      Object.assign(this, args);
+      this.isValid();
+    }
+  }
+
   isValid() {
     const isValid = validator.validateSync(this, { validationError: { target: false }, forbidNonWhitelisted: true });
     if (isValid.length > 0) {
