@@ -3,22 +3,24 @@ import IRepositoryGeneric from '../../infrastructure/database/IRepositoryGeneric
 
 export default abstract class GenericImpl<T> implements IGeneric<T> {
   private genericRepository: IRepositoryGeneric<T>;
+  private entity;
 
-  constructor(genericRepository: IRepositoryGeneric<T>) {
+  constructor(genericRepository: IRepositoryGeneric<T>, entityType: new (args) => T) {
     this.genericRepository = genericRepository;
+    this.entity = entityType;
   }
 
   async create(item: T) {
-    return await this.genericRepository.create(item);
+    return await this.genericRepository.create(new this.entity(item));
   }
   async update(id: string, item: T) {
-    return await this.genericRepository.update(id, item);
+    return await this.genericRepository.update(id, new this.entity(item));
   }
   async delete(id: string) {
     return await this.genericRepository.delete(id);
   }
   async find(item: T) {
-    return await this.genericRepository.find(item);
+    return await this.genericRepository.find(new this.entity(item));
   }
   async findOne(id: string) {
     return await this.genericRepository.findOne(id);

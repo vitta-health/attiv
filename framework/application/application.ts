@@ -1,4 +1,5 @@
 import Server from './server';
+
 class Application {
   server: Server;
   constructor({ server }) {

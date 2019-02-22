@@ -27,7 +27,7 @@ export function ErrorHandler(err: any, req: Request, res, next: NextFunction) {
   if (err instanceof ValidationError) {
     response.status = 400;
     response.message = err.message || messages.errorHandler.VALIDATION_ERROR;
-    response.detais = err.errors.details;
+    response.detais = err.errors.details || err.errors || {};
   }
 
   if (err instanceof BusinessError) {
