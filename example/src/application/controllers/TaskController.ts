@@ -13,6 +13,7 @@ export default class TaskController extends GenericController<ITaskService> impl
     let router = Router();
     router = super.getRouter();
     router.get('/get', this.getAll.bind(this));
+    router.post('/new', this.createIsValid.bind(this));
 
     return router;
   }
@@ -20,6 +21,14 @@ export default class TaskController extends GenericController<ITaskService> impl
   async getAll(req: Request, res, nextn) {
     try {
       return res.status(200).json(await this.getService(req).getAll());
+    } catch (ex) {
+      nextn(ex);
+    }
+  }
+
+  async createIsValid(req: Request, res, nextn) {
+    try {
+      return res.status(200).json(await this._taskService.createIsValid(req.body));
     } catch (ex) {
       nextn(ex);
     }
