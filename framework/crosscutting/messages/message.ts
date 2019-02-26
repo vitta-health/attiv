@@ -7,11 +7,14 @@ const messages = {
     BUSINESS_ERROR: 'BUSINESS ERROR',
     API_ERROR: 'API ERROR',
   },
+  successHandler: {
+    SUCCESS: 'SUCCESS',
+  },
   validateDbContext: {
-    EXIST_TRANSACTION_OPEN: 'THERE IS OPEN TRANSACTION'
+    EXIST_TRANSACTION_OPEN: 'THERE IS OPEN TRANSACTION',
   },
   DbContexto: {
-    NOT_TRANSACTION: 'NO TRANSACTION OPEN'
+    NOT_TRANSACTION: 'NO TRANSACTION OPEN',
   },
 };
 
