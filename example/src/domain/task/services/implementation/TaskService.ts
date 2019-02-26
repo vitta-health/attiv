@@ -18,4 +18,13 @@ export default class TaskService extends GenericImpl<Task> implements ITaskServi
       return { message: 'Objeto valido!' };
     }
   }
+
+
+  async create(item: Task) {
+   await this.genericRepository.beginTransaction();
+   const resp = await this.genericRepository.create(item);
+   this.genericRepository.commit();
+   return resp;
+  }
+
 }

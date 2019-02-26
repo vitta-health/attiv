@@ -1,4 +1,5 @@
-import { ErrorHandler } from './errorHandler';
+import { ErrorHandler } from './middlewares/errorHandler';
+import { validateDbContext } from './middlewares/validateDbContext';
 import { NotFoundError } from '../crosscutting/exceptions/NotFoundError';
 import { NextFunction } from 'express';
 
@@ -9,18 +10,25 @@ require('dotenv').config();
 
 class Server {
   express: any;
-  constructor({ router }) {
+  constructor({ router , containerMiddleware}) {
     this.express = express();
     this.express.disable('x-powered-by');
+    this.express.use(containerMiddleware);
+    this.express.use(validateDbContext);
+
     this.express.use(router);
     this.express.use(cors);
     this.express.use(bodyParser);
     this.express.use(bodyParser.urlencoded({ extended: false }));
 
+   
+
     // catch 404 and forward to error handler
     router.use('*', (req: Request, res: Response, next: NextFunction) => {
       throw new NotFoundError();
     });
+
+
 
     this.express.use(ErrorHandler);
   }

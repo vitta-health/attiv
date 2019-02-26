@@ -16,7 +16,7 @@ export default abstract class GenericImpl<T> implements IGeneric<T> {
   async update(id: string, item: T) {
     return await this.genericRepository.update(id, new this.entity(item));
   }
-  async delete(id: string) {
+  async delete(id: string) { 
     return await this.genericRepository.delete(id);
   }
   async find(item: T) {

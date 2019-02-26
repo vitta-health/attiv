@@ -1,11 +1,11 @@
 import { NextFunction } from 'connect';
-import { APIError } from '../crosscutting/exceptions/APIError';
-import { BusinessError } from '../crosscutting/exceptions/BusinessError';
-import { ValidationError } from '../crosscutting/exceptions/ValidationError';
-import { UnauthenticatedError } from '../crosscutting/exceptions/UnauthenticatedError';
-import { NotFoundError } from '../crosscutting/exceptions/NotFoundError';
-import ResponseRequest from '../crosscutting/util/ResponseRequest';
-import messages from '../crosscutting/messages/message';
+import { APIError } from '../../crosscutting/exceptions/APIError';
+import { BusinessError } from '../../crosscutting/exceptions/BusinessError';
+import { ValidationError } from '../../crosscutting/exceptions/ValidationError';
+import { UnauthenticatedError } from '../../crosscutting/exceptions/UnauthenticatedError';
+import { NotFoundError } from '../../crosscutting/exceptions/NotFoundError';
+import ResponseRequest from '../../crosscutting/util/ResponseRequest';
+import messages from '../../crosscutting/messages/message';
 
 export function ErrorHandler(err: any, req: Request, res, next: NextFunction) {
   const response = new ResponseRequest<string>();

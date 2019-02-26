@@ -1,11 +1,11 @@
 const { Router } = require('express');
 const bodyParser = require('body-parser');
 
-module.exports = ({ containerMiddleware }) => {
+module.exports = () => {
   const router = Router();
 
   const apiRouter = Router();
-  apiRouter.use(bodyParser.json()).use(containerMiddleware);
+  apiRouter.use(bodyParser.json());
 
   apiRouter.use('/check', (req, res, next) => {
     return res
@@ -14,6 +14,8 @@ module.exports = ({ containerMiddleware }) => {
   });
 
   router.use('/api', apiRouter);
+
+
 
   return router;
 };
