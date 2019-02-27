@@ -10,7 +10,7 @@ const messages = {
   successHandler: {
     SUCCESS: 'SUCCESS',
   },
-  validateDbContext: {
+  responseHandler: {
     EXIST_TRANSACTION_OPEN: 'THERE IS OPEN TRANSACTION',
   },
   DbContexto: {
