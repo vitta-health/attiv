@@ -19,12 +19,11 @@ export default class TaskService extends GenericImpl<Task> implements ITaskServi
     }
   }
 
-
-  async create(item: Task) {
-   await this.genericRepository.beginTransaction();
-   const resp = await this.genericRepository.create(item);
-   this.genericRepository.commit();
-   return resp;
+  async create(item) {
+    const task = new Task(item);
+    await this.genericRepository.beginTransaction();
+    const resp = await this.genericRepository.create(task);
+    this.genericRepository.commit();
+    return resp;
   }
-
 }

@@ -28,7 +28,7 @@ export default class TaskController extends GenericController<ITaskService> impl
 
   async createIsValid(req: Request, res, nextn) {
     try {
-      return res.status(200).json(await this._taskService.createIsValid(req.body));
+      return res.status(200).json(await  this.getService(req).createIsValid(req.body));
     } catch (ex) {
       nextn(ex);
     }
