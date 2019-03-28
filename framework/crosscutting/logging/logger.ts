@@ -1,6 +1,17 @@
-const Log4js = require('log4js');
-module.exports = ({ config }) => {
+const winston = require("winston");
 
-  Log4js.configure(config.logging);
-  return Log4js.getLogger();
-};
+const level = process.env.LOG_LEVEL || "debug";
+
+const logger = winston.createLogger({
+  transports: [
+    new winston.transports.Console({
+      level: level,
+      timestamp: function() {
+        return new Date().toISOString();
+      },
+    }),
+  ],
+  exitOnError: false,
+});
+
+export default logger;
