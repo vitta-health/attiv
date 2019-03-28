@@ -1,31 +1,38 @@
-import { ErrorHandler } from './middlewares/errorHandler';
-import { responseHandler } from './middlewares/responseHandler';
-import { NotFoundError } from '../crosscutting/exceptions/NotFoundError';
-import { NextFunction } from 'express';
+import { ErrorHandler } from "./middlewares/errorHandler";
+import { responseHandler } from "./middlewares/responseHandler";
+import { NotFoundError } from "../crosscutting/exceptions/NotFoundError";
+import { NextFunction } from "express";
+import * as morgan from "morgan";
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-require('dotenv').config();
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+require("dotenv").config();
 
 class Server {
   express: any;
-  constructor({ router , containerMiddleware}) {
+  constructor({ router, containerMiddleware }) {
     this.express = express();
-    this.express.disable('x-powered-by');
+    this.express.disable("x-powered-by");
+    this.express.use(morgan("combined"));
     this.express.use(containerMiddleware);
     this.express.use(responseHandler);
-
     this.express.use(router);
     this.express.use(cors);
     this.express.use(bodyParser);
     this.express.use(bodyParser.urlencoded({ extended: false }));
+    this.express.use("/docs", express.static("docs"));
+
     // catch 404 and forward to error handler
-    router.use('*', (req: Request, res: Response, next: NextFunction) => {
+    router.use("*", (req: Request, res: Response, next: NextFunction) => {
       throw new NotFoundError();
     });
 
     this.express.use(ErrorHandler);
+  }
+
+  getExpress() {
+    return express;
   }
 
   start() {

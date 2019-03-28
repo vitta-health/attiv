@@ -1,11 +1,13 @@
-import { NextFunction } from 'connect';
-import { APIError } from '../../crosscutting/exceptions/APIError';
-import { BusinessError } from '../../crosscutting/exceptions/BusinessError';
-import { ValidationError } from '../../crosscutting/exceptions/ValidationError';
-import { UnauthenticatedError } from '../../crosscutting/exceptions/UnauthenticatedError';
-import { NotFoundError } from '../../crosscutting/exceptions/NotFoundError';
-import ResponseRequest from '../../crosscutting/util/ResponseRequest';
-import messages from '../../crosscutting/messages/message';
+import { NextFunction } from "connect";
+import { APIError } from "../../crosscutting/exceptions/APIError";
+import { BusinessError } from "../../crosscutting/exceptions/BusinessError";
+import { ValidationError } from "../../crosscutting/exceptions/ValidationError";
+import { UnauthenticatedError } from "../../crosscutting/exceptions/UnauthenticatedError";
+import { NotFoundError } from "../../crosscutting/exceptions/NotFoundError";
+import ResponseRequest from "../../crosscutting/util/ResponseRequest";
+import messages from "../../crosscutting/messages/message";
+import logger from "../../crosscutting/logging/logger";
+import * as util from "util";
 
 export function ErrorHandler(err: any, req: Request, res, next: NextFunction) {
   const response = new ResponseRequest<string>();
@@ -40,6 +42,8 @@ export function ErrorHandler(err: any, req: Request, res, next: NextFunction) {
     response.message = err.message || messages.errorHandler.API_ERROR;
     response.detais = err.stack;
   }
+
+  logger.error(util.inspect(response));
 
   return res.status(response.status).json(response);
 }
