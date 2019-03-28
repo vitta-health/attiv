@@ -1,6 +1,6 @@
 {
   "name": "attiv",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Fast framework for software development using node",
   "main": "./lib/index.ts",
   "types": "./lib/index.d.ts",
