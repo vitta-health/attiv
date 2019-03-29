@@ -12,6 +12,14 @@ In addition, it is necessary to have the npm and node installed in the latest ve
 
 2 - Access the project you finished and clone
 
+2.1 - Change the package.json by adding the following content only to test the example
+
+```shel
+"_moduleAliases": {
+   "attiv": "./framework"
+},
+```
+
 3 - Execute the following commands in the root directory of the application
 
 ```shell
