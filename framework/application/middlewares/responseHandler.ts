@@ -1,11 +1,11 @@
-import { NextFunction } from 'connect';
-import DbContext from '../../infrastructure/database/DbContext';
-import messages from '../../crosscutting/messages/message';
-import { ResponseRequest } from '../..';
+import { NextFunction } from "connect";
+import DbContext from "../../infrastructure/database/DbContext";
+import messages from "../../crosscutting/messages/message";
+import { ResponseRequest } from "../..";
 
 export function responseHandler(req: any, res, next: NextFunction) {
   const json_ = res.json;
-  const DbContext = req.container.resolve('DbContext') as DbContext;
+  const DbContext = req.container.resolve("DbContext") as DbContext;
 
   res.json = function(data) {
     if (DbContext.getTransaction() != null) {
@@ -15,7 +15,16 @@ export function responseHandler(req: any, res, next: NextFunction) {
 
     if (res.statusCode == 200) {
       const resRequest = new ResponseRequest();
-      resRequest.data = data;
+
+      if (data.paginate === true) {
+        resRequest.page = data.page;
+        resRequest.pageSize = data.pageSize;
+        resRequest.pages = data.pages;
+        resRequest.total = data.total;
+        resRequest.data = data.data;
+      } else {
+        resRequest.data = data;
+      }
 
       json_.call(res, resRequest);
     } else {

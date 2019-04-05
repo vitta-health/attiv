@@ -4,5 +4,5 @@ export default interface IGeneric<T> {
   delete(id: string);
   find(item: T);
   findOne(id: string);
-  getAll();
+  getAll(query: string);
 }

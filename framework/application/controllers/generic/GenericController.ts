@@ -1,7 +1,8 @@
-import { Request, Response, Router } from 'express';
-import IGenericController from './IGenericController';
+import { Request, Response, Router } from "express";
+import IGenericController from "./IGenericController";
 
-export default abstract class GenericController<T> implements IGenericController {
+export default abstract class GenericController<T>
+  implements IGenericController {
   public nameService: string;
 
   constructor(nameService: string) {
@@ -10,10 +11,10 @@ export default abstract class GenericController<T> implements IGenericController
 
   public getRouter() {
     const router = Router();
-    router.get('/', this.index.bind(this));
-    router.post('/', this.create.bind(this));
-    router.put('/:id', this.update.bind(this));
-    router.delete('/:id', this.delete.bind(this));
+    router.get("/", this.index.bind(this));
+    router.post("/", this.create.bind(this));
+    router.put("/:id", this.update.bind(this));
+    router.delete("/:id", this.delete.bind(this));
 
     return router;
   }
@@ -24,7 +25,7 @@ export default abstract class GenericController<T> implements IGenericController
 
   async index(req: Request, res: Response, nextn) {
     try {
-      return res.status(200).json(await this.getService(req).getAll());
+      return res.status(200).json(await this.getService(req).getAll(req.query));
     } catch (ex) {
       nextn(ex);
     }
