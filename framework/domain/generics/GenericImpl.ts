@@ -1,5 +1,6 @@
 import IGeneric from './IGeneric';
 import IRepositoryGeneric from '../../infrastructure/database/IRepositoryGeneric';
+import IQueryRequest from '../../crosscutting/util/IQueryRequest';
 
 export default abstract class GenericImpl<T> implements IGeneric<T> {
   protected genericRepository: IRepositoryGeneric<T>;
@@ -25,7 +26,7 @@ export default abstract class GenericImpl<T> implements IGeneric<T> {
   async findOne(id: string) {
     return await this.genericRepository.findOne(id);
   }
-  async getAll() {
-    return await this.genericRepository.getAll();
+  async getAll(query: IQueryRequest) {
+    return await this.genericRepository.getAll(query);
   }
 }

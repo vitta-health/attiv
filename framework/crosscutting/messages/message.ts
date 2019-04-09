@@ -16,6 +16,9 @@ const messages = {
   DbContexto: {
     NOT_TRANSACTION: 'NO TRANSACTION OPEN',
   },
+  RepositoryGeneric: {
+    COLUMN_NOT_EXIST: 'COLUMN NOT EXIST'
+  }
 };
 
 export default messages;

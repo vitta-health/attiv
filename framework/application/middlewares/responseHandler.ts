@@ -15,7 +15,16 @@ export function responseHandler(req: any, res, next: NextFunction) {
 
     if (res.statusCode == 200) {
       const resRequest = new ResponseRequest();
-      resRequest.data = data;
+      
+      if (data.paginate === true) {
+        resRequest.page = data.page;
+        resRequest.pageSize = data.pageSize;
+        resRequest.pages = data.pages;
+        resRequest.total = data.total;
+        resRequest.data = data.data;
+      } else {
+        resRequest.data = data;
+      }
 
       json_.call(res, resRequest);
     } else {

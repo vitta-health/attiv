@@ -24,7 +24,7 @@ export default abstract class GenericController<T> implements IGenericController
 
   async index(req: Request, res: Response, nextn) {
     try {
-      return res.status(200).json(await this.getService(req).getAll());
+      return res.status(200).json(await this.getService(req).getAll(req.query));
     } catch (ex) {
       nextn(ex);
     }
