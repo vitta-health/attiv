@@ -13,11 +13,16 @@ export default class DbContext
         this.countTransaction = 0;
         this.transaction = null;
         this.db = db.sequelize;
+    
     }
 
     public getTransaction()
     {
       return this.transaction;
+    }
+
+    public getModel(name: string) {
+      return this.db.models[name];
     }
 
     public async beginTransaction() 

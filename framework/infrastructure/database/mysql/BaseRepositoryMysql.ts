@@ -6,13 +6,10 @@ import IQueryRequest from '../../../crosscutting/util/IQueryRequest';
 export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
   private model: Model<any, any>;
   private DbContext: DbContext;
-  private db;
   
-
-  constructor(model: any, DbContext: DbContext , db: any) {
+  constructor(model: any, DbContext: DbContext) {
     this.model = model;
     this.DbContext = DbContext;
-    this.db = db;
   }
 
   async getAll(query: IQueryRequest) {
@@ -119,7 +116,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       };
 
       queryIncludes.forEach(includeQuery => {
-        const model = this.db.sequelize.models[includeQuery];
+        const model = this.DbContext.getModel(includeQuery);
         include['model'] = model;
 
         const whereInclude = filterQ.filter(q => q.indexOf(includeQuery) >= 0);

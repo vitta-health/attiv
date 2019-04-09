@@ -7,7 +7,7 @@ import { Task } from '../database/models';
 
 export default class TaskRepository extends BaseRepositoryMysql<TaskDomain>
   implements ITaskRepository, IRepositoryGeneric<TaskDomain> {
-    constructor({ DbContext , db }) {
-      super(Task, DbContext, db);
+    constructor({ DbContext  }) {
+      super(Task, DbContext);
     }
 }
