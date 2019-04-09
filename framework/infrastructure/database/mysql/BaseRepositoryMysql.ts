@@ -99,13 +99,16 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
   private amountSearchQueryIncludes(query: IQueryRequest){
      
-    let filterQ = Array.isArray(query.fields)
-      ? query.fields
-      : query.fields !== undefined
-      ? new Array(query.fields)
-      : [];
+    let filterQ = [];
 
-    const queryIncludes = Array.isArray(query.includes) ? query.includes : query.includes !== undefined ? new Array(query.includes) : [] ;
+    if(query.fields !== undefined){
+      filterQ = Array.isArray(query.fields) ? query.fields : new Array(query.fields);
+    }
+
+    let queryIncludes = [];
+    if(query.includes !== undefined ) {
+      queryIncludes = Array.isArray(query.includes) ?  query.includes :  new Array(query.includes)
+    }
 
     const queryIncludesList = [];
 
