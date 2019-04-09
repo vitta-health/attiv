@@ -5,7 +5,6 @@ const DB_USER = process.env.DB_USER;
 const DB_PASS = process.env.DB_PASS;
 const DB_NAME = process.env.DB_NAME;
 const DB_DIALECT = process.env.DB_DIALECT;
-
 module.exports = {
   username: DB_USER,
   password: DB_PASS,
