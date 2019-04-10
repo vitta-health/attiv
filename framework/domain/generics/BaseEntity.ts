@@ -17,7 +17,7 @@ export default abstract class BaseEntity {
         isValid.map(err => {
           return { variable: err.property, messages: err.constraints };
         }),
-        messages.errorHandler.VALIDATION_ERROR
+        messages.errorHandler.VALIDATION_ERROR,
       );
     }
     return true;

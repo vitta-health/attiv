@@ -1,4 +1,3 @@
-
 export default interface IRepositoryGeneric<T> {
   create(item: T);
   update(id: string, item: T);

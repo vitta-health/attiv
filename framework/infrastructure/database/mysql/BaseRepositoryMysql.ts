@@ -7,18 +7,18 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   private model: Model<any, any>;
   private DbContext: DbContext;
   private paginateParams: IQueryRequest;
-  
+
   /**
-   * 
+   *
    * @param model Object modelo que sera usado para realizar as operacoes no banco de dados
    * @param DbContext Contexto do banco para controle de transacao
    * @param paginateParams Parametros enviados na requisicao, que sao usados para paginacao e filtro
    */
-  constructor(model: any, DbContext: DbContext , paginateParams?: IQueryRequest) {
+  constructor(model: any, DbContext: DbContext, paginateParams?: IQueryRequest) {
     this.model = model;
     this.DbContext = DbContext;
 
-    if(paginateParams === undefined){
+    if (paginateParams === undefined) {
       paginateParams.page = 1;
       paginateParams.limit = 10;
       paginateParams.offset = 1;
@@ -32,14 +32,13 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
    * Metodo responsavel por receber as condicoes de uma query personalizada e realizar paginacao
    * @param queryBuilder Query sequelize com wheres, includes e attributes
    */
-  async paginate(queryBuilder?: FindOptions<T>){
-    
+  async paginate(queryBuilder?: FindOptions<T>) {
     const result = await this.model.findAndCountAll({
       transaction: this.DbContext.getTransaction(),
       ...queryBuilder,
       offset: this.paginateParams.offset,
       limit: this.paginateParams.limit,
-      order: this.paginateParams.order
+      order: this.paginateParams.order,
     });
 
     const data = {
@@ -48,7 +47,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       page: this.paginateParams.page,
       pageSize: this.paginateParams.pageSize,
       pages: Math.ceil(result.count / this.paginateParams.pageSize),
-      data: result.rows
+      data: result.rows,
     };
 
     return data;
@@ -59,34 +58,37 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
    * e retornar os dados paginado, com ou sem filtro, com ou sem includes e com ou ser ordenacao
    */
   async getAll() {
-   
     const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
 
     const searchableFields = {};
     amountSearchQueryIncludes.filterQ.forEach(query => {
-      const filter = query.split("=");
-      if ( typeof filter[1] === 'string' ) {
+      const filter = query.split('=');
+
+      if (!isNaN(filter[1])) {
+        searchableFields[filter[0]] = filter[1];
+      } else if (typeof filter[1] === 'string') {
         searchableFields[filter[0]] = {
-          $like: `${filter[1]}%`
+          $like: `${filter[1]}%`,
         };
       } else {
         searchableFields[filter[0]] = filter[1];
       }
     });
-   
+
     const filter = {
       where: {
-        ...searchableFields
+        ...searchableFields,
       },
       include: amountSearchQueryIncludes.queryIncludesList,
-    }
+    };
 
     return this.paginate(filter);
-
   }
+
   async create(item: T) {
     return await this.model.create(item, { transaction: this.DbContext.getTransaction() });
   }
+
   async update(id: string, item: T) {
     return await this.model.update(item, {
       where: {
@@ -95,15 +97,18 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       transaction: this.DbContext.getTransaction(),
     });
   }
+
   async delete(id: string) {
     return await this.model.destroy({
       where: { id },
       transaction: this.DbContext.getTransaction(),
     });
   }
+
   async find(item: T) {
     return await this.model.find(item);
   }
+
   async findOne(id: string) {
     return await this.model.findById(id, { transaction: this.DbContext.getTransaction() });
   }
@@ -120,25 +125,23 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     this.DbContext.rollback();
   }
 
-  private amountSearchQueryIncludes(query: IQueryRequest){
-     
+  private amountSearchQueryIncludes(query: IQueryRequest) {
     let filterQ = [];
 
-    if(query.fields !== undefined){
+    if (query.fields !== undefined) {
       filterQ = Array.isArray(query.fields) ? query.fields : new Array(query.fields);
     }
 
     let queryIncludes = [];
-    if(query.includes !== undefined ) {
-      queryIncludes = Array.isArray(query.includes) ?  query.includes :  new Array(query.includes)
+    if (query.includes !== undefined) {
+      queryIncludes = Array.isArray(query.includes) ? query.includes : new Array(query.includes);
     }
 
     const queryIncludesList = [];
 
-    if ( queryIncludes.length > 0 ) {
-
+    if (queryIncludes.length > 0) {
       let include = {
-        required:false
+        required: false,
       };
 
       queryIncludes.forEach(includeQuery => {
@@ -149,19 +152,18 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
         let searchableFieldsIncludes = {};
         whereInclude.forEach(query => {
-          filterQ.splice(filterQ.indexOf(query) , 1);
-          const filter = query.split("=");
-          const field = filter[0].split(".");
+          filterQ.splice(filterQ.indexOf(query), 1);
+          const filter = query.split('=');
+          const field = filter[0].split('.');
           searchableFieldsIncludes[field[1]] = filter[1];
         });
-        
-        include['where'] = { ...searchableFieldsIncludes };
 
-      }); 
+        include['where'] = { ...searchableFieldsIncludes };
+      });
 
       queryIncludesList.push(include);
     }
 
-    return { queryIncludesList , filterQ };
+    return { queryIncludesList, filterQ };
   }
 }
