@@ -2,10 +2,17 @@ import { GenericImpl, IGeneric } from 'attiv';
 
 import ITaskService from '../interface/ITaskService';
 import Task from '../../entities/Task';
+import ITaskRepository from '../../irepositories/ITaskRepository';
 
 export default class TaskService extends GenericImpl<Task> implements ITaskService, IGeneric<Task> {
+  private taskRepository: ITaskRepository;
   constructor({ taskRepository }) {
     super(taskRepository, Task);
+    this.taskRepository = taskRepository;
+  }
+
+  getFindTaskByTitle(name: string) {
+    return this.taskRepository.getFindTaskByTitle(name);
   }
 
   createIsValid(item) {

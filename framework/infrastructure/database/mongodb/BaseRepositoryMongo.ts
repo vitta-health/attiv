@@ -1,5 +1,3 @@
-import IRepositoryGeneric from '../IRepositoryGeneric';
-import { Mongoose } from 'mongoose';
 import { APIError } from '../../../crosscutting/exceptions/APIError';
 
 export default abstract class BaseRepositoryMongo<T> {
