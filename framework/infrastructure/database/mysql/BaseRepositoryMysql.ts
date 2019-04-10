@@ -20,9 +20,9 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
     if (paginateParams === undefined) {
       paginateParams.page = 1;
-      paginateParams.limit = 10;
-      paginateParams.offset = 1;
-      paginateParams.pageSize = 10;
+      paginateParams.limit = parseInt(process.env.LIMIT_PAGINATION) || 10;
+      paginateParams.offset = paginateParams.page;
+      paginateParams.pageSize = paginateParams.limit;
     }
 
     this.paginateParams = paginateParams;
@@ -62,16 +62,16 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
     const searchableFields = {};
     amountSearchQueryIncludes.filterQ.forEach(query => {
-      const filter = query.split('=');
+      const [key, value] = query.split('=');
 
-      if (!isNaN(filter[1])) {
-        searchableFields[filter[0]] = filter[1];
-      } else if (typeof filter[1] === 'string') {
-        searchableFields[filter[0]] = {
-          $like: `${filter[1]}%`,
+      if (!isNaN(value)) {
+        searchableFields[key] = value;
+      } else if (typeof value === 'string') {
+        searchableFields[key] = {
+          $like: `${value}%`,
         };
       } else {
-        searchableFields[filter[0]] = filter[1];
+        searchableFields[key] = value;
       }
     });
 
@@ -153,9 +153,19 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         let searchableFieldsIncludes = {};
         whereInclude.forEach(query => {
           filterQ.splice(filterQ.indexOf(query), 1);
-          const filter = query.split('=');
-          const field = filter[0].split('.');
-          searchableFieldsIncludes[field[1]] = filter[1];
+
+          const [key, value] = query.split('=');
+          const [, relationValue] = key.split('.');
+
+          if (!isNaN(value)) {
+            searchableFieldsIncludes[relationValue] = value;
+          } else if (typeof value === 'string') {
+            searchableFieldsIncludes[relationValue] = {
+              $like: `${value}%`,
+            };
+          } else {
+            searchableFieldsIncludes[relationValue] = value;
+          }
         });
 
         include['where'] = { ...searchableFieldsIncludes };

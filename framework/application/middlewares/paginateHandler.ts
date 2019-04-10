@@ -5,7 +5,7 @@ import IQueryRequest from '../../crosscutting/util/IQueryRequest';
 export function PaginateHandler(request: any, response: Response, next: NextFunction) {
   const fieldDefaultFilter = ['limit', 'page', 'includes', 'fields', 'order'];
 
-  const pageSize = parseInt(request.query.limit) || 10;
+  const pageSize = parseInt(request.query.limit) || parseInt(process.env.LIMIT_PAGINATION) || 10;
   const page = parseInt(request.query.page) || 1;
 
   const offset = (page - 1) * pageSize;
