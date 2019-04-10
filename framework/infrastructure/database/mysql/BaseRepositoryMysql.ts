@@ -65,7 +65,13 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     const searchableFields = {};
     amountSearchQueryIncludes.filterQ.forEach(query => {
       const filter = query.split("=");
-      searchableFields[filter[0]] = filter[1];
+      if ( typeof filter[1] === 'string' ) {
+        searchableFields[filter[0]] = {
+          $like: `${filter[1]}%`
+        };
+      } else {
+        searchableFields[filter[0]] = filter[1];
+      }
     });
    
     const filter = {
