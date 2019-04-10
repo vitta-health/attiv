@@ -15,6 +15,8 @@ import { ObjectNotFoundError } from "./crosscutting/exceptions/ObjectNotFoundErr
 import { RepositoryError } from "./crosscutting/exceptions/RepositoryError";
 import { UnauthenticatedError } from "./crosscutting/exceptions/UnauthenticatedError";
 import { ValidationError } from "./crosscutting/exceptions/ValidationError";
+import { PaginateHandler } from "./application/middlewares/paginateHandler";
+
 import messages from "./crosscutting/messages/message";
 
 import CreateControllerRoutes from "./crosscutting/util/CreateControllerRoutes";
@@ -35,6 +37,7 @@ export {
   Application,
   Server,
   router,
+  PaginateHandler,
   GenericController,
   IGenericController,
   APIError,
@@ -55,4 +58,5 @@ export {
   BaseRepositoryMysql,
   BaseRepositoryMongo,
   BaseEntity,
+  
 };

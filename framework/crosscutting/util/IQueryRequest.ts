@@ -1,7 +1,10 @@
 export default interface IQueryRequest {
-    page: string;
-    limit: string;
+    page: number;
+    limit: number;
+    offset: number;
+    pageSize: number;
     fields: any;
     includes: Array<String>;
+    order: Array<any>
   }
   

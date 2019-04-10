@@ -1,4 +1,4 @@
-import { container, Application } from "attiv";
+import { container, Application, PaginateHandler } from "attiv";
 const { asClass, asValue } = require("awilix");
 import TaskController from "./application/controllers/TaskController";
 import TaskService from "./domain/task/services/implementation/TaskService";
@@ -15,10 +15,14 @@ container.register({
 });
 
 const vittaRouter = container.resolve("router");
+
+vittaRouter.use(PaginateHandler);
 vittaRouter.use(bodyParser.json());
 vittaRouter.use("/task", container.resolve("taskController").getRouter());
 
 const app = container.resolve("app") as Application;
+
+
 
 app.start().catch(error => {
   console.log(error);

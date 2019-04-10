@@ -1,4 +1,4 @@
-import {  Sequelize, Transaction} from 'sequelize';
+import {  Sequelize, Transaction, Model} from 'sequelize';
 import messages from '../../crosscutting/messages/message'
 
 export default class DbContext
@@ -21,7 +21,7 @@ export default class DbContext
       return this.transaction;
     }
 
-    public getModel(name: string) {
+    public getModel(name: string){
       return this.db.models[name];
     }
 

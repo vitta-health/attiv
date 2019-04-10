@@ -6,57 +6,68 @@ import IQueryRequest from '../../../crosscutting/util/IQueryRequest';
 export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
   private model: Model<any, any>;
   private DbContext: DbContext;
+  private paginateParams: IQueryRequest;
   
-  constructor(model: any, DbContext: DbContext) {
+  constructor(model: any, DbContext: DbContext , paginateParams?: IQueryRequest) {
     this.model = model;
     this.DbContext = DbContext;
+
+    if(paginateParams === undefined){
+      paginateParams.page = 1;
+      paginateParams.limit = 10;
+      paginateParams.offset = 1;
+      paginateParams.pageSize = 10;
+    }
+
+    this.paginateParams = paginateParams;
   }
 
-  async getAll(query: IQueryRequest) {
-    const fieldDefaultFilter = ['limit','page','includes','fields'];
-      
-    query.fields = [];
-
-    Object.keys(query).forEach(keys => {
-      if( fieldDefaultFilter.indexOf(keys) < 0 ) {
-        query.fields.push(`${keys}=${query[keys]}`);
-      }
+  /**
+   * Metodo responsavel por receber as condicoes de uma query personalizada e realizar paginacao
+   * @param builderQuery Query sequelize com wheres, includes e attributes
+   * @param paginateParans Objeto recebido pela injecao de dependencia
+   */
+  async paginate(builderQuery: Object){
+    
+    const result = await this.model.findAndCountAll({
+      transaction: this.DbContext.getTransaction(),
+      ...builderQuery,
+      offset: this.paginateParams.offset,
+      limit: this.paginateParams.limit,
+      order: this.paginateParams.order
     });
 
-    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(query);
+    const data = {
+      paginate: true,
+      total: result.count,
+      page: this.paginateParams.page,
+      pageSize: this.paginateParams.pageSize,
+      pages: Math.ceil(result.count / this.paginateParams.pageSize),
+      data: result.rows
+    };
+
+    return data;
+  }
+
+  async getAll() {
+   
+    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
 
     const searchableFields = {};
     amountSearchQueryIncludes.filterQ.forEach(query => {
       const filter = query.split("=");
       searchableFields[filter[0]] = filter[1];
     });
-
-    const pageSize = parseInt(query.limit) || 10;
-    const page = parseInt(query.page) || 1;
-
-    const offset = (page - 1) * pageSize;
-    const limit = pageSize;
-
-    const result = await this.model.findAndCountAll({
-      transaction: this.DbContext.getTransaction(),
-      offset: offset,
+   
+    const filter = {
       where: {
         ...searchableFields
       },
       include: amountSearchQueryIncludes.queryIncludesList,
-      limit: limit,
-    });
+    }
 
-    const data = {
-      paginate: true,
-      total: result.count,
-      page: page,
-      pageSize: pageSize,
-      pages: Math.ceil(result.count / pageSize),
-      data: result.rows,
-    };
+    return this.paginate(filter);
 
-    return data;
   }
   async create(item: T) {
     return await this.model.create(item, { transaction: this.DbContext.getTransaction() });

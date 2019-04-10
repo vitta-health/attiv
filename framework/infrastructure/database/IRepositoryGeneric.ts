@@ -1,4 +1,3 @@
-import IQueryRequest from "../../crosscutting/util/IQueryRequest";
 
 export default interface IRepositoryGeneric<T> {
   create(item: T);
@@ -6,7 +5,7 @@ export default interface IRepositoryGeneric<T> {
   delete(id: string);
   find(item: T);
   findOne(id: string);
-  getAll(query: IQueryRequest);
+  getAll();
   beginTransaction();
   commit();
   rollback();
