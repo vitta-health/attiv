@@ -22,7 +22,7 @@ export default class DbContext {
 
   public async beginTransaction() {
     this.countTransaction++;
-    if (this.transaction == null) {
+    if (this.transaction === null) {
       this.transaction = await this.db.transaction({ autocommit: false });
     }
   }
@@ -30,7 +30,7 @@ export default class DbContext {
   public commit() {
     if (!this.transaction) throw new Error(messages.DbContexto.NOT_TRANSACTION);
 
-    if (this.countTransaction == 1) {
+    if (this.countTransaction === 1) {
       this.transaction.commit();
       this.transaction = null;
     }
@@ -39,7 +39,7 @@ export default class DbContext {
 
   public rollback() {
     if (!this.transaction) throw new Error(messages.DbContexto.NOT_TRANSACTION);
-    if (this.countTransaction == 1) {
+    if (this.countTransaction === 1) {
       this.transaction.rollback();
       this.transaction = null;
     }

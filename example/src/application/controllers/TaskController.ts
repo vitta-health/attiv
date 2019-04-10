@@ -1,10 +1,9 @@
 import { GenericController, IGenericController } from 'attiv';
 import ITaskService from '../../domain/task/services/interface/ITaskService';
 
-import { Router ,Request } from 'express';
+import { Router, Request } from 'express';
 
 export default class TaskController extends GenericController<ITaskService> implements IGenericController {
-  
   constructor() {
     super('taskService');
   }
@@ -37,7 +36,7 @@ export default class TaskController extends GenericController<ITaskService> impl
 
   async createIsValid(req: Request, res, nextn) {
     try {
-      return res.status(200).json(await  this.getService(req).createIsValid(req.body));
+      return res.status(200).json(await this.getService(req).createIsValid(req.body));
     } catch (ex) {
       nextn(ex);
     }
