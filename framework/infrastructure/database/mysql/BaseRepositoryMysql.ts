@@ -19,13 +19,18 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     this.DbContext = DbContext;
 
     if (paginateParams === undefined) {
-      paginateParams.page = 1;
-      paginateParams.limit = parseInt(process.env.LIMIT_PAGINATION) || 10;
-      paginateParams.offset = paginateParams.page;
-      paginateParams.pageSize = paginateParams.limit;
+      this.paginateParams = {
+        page: 1,
+        limit: parseInt(process.env.LIMIT_PAGINATION) || 10,
+        offset: 1,
+        pageSize: parseInt(process.env.LIMIT_PAGINATION) || 10,
+        fields: [],
+        includes: [],
+        order: [],
+      };
+    } else {
+      this.paginateParams = paginateParams;
     }
-
-    this.paginateParams = paginateParams;
   }
 
   /**
