@@ -16,9 +16,6 @@
     "awilix",
     "awilix-express"
   ],
-  "_moduleAliases": {
-    "attiv": "./framework"
- },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vitta-health/attiv.git"

@@ -1,5 +1,5 @@
 import IRepositoryGeneric from '../IRepositoryGeneric';
-import { Model } from 'sequelize';
+import { Model, FindOptions } from 'sequelize';
 import DbContext from '../DbContext';
 import IQueryRequest from '../../../crosscutting/util/IQueryRequest';
 
@@ -8,6 +8,12 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   private DbContext: DbContext;
   private paginateParams: IQueryRequest;
   
+  /**
+   * 
+   * @param model Object modelo que sera usado para realizar as operacoes no banco de dados
+   * @param DbContext Contexto do banco para controle de transacao
+   * @param paginateParams Parametros enviados na requisicao, que sao usados para paginacao e filtro
+   */
   constructor(model: any, DbContext: DbContext , paginateParams?: IQueryRequest) {
     this.model = model;
     this.DbContext = DbContext;
@@ -25,9 +31,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   /**
    * Metodo responsavel por receber as condicoes de uma query personalizada e realizar paginacao
    * @param queryBuilder Query sequelize com wheres, includes e attributes
-   * @param paginateParans Objeto recebido pela injecao de dependencia
    */
-  async paginate(queryBuilder: Object){
+  async paginate(queryBuilder?: FindOptions<T>){
     
     const result = await this.model.findAndCountAll({
       transaction: this.DbContext.getTransaction(),
@@ -49,6 +54,10 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     return data;
   }
 
+  /**
+   * Metodo responsavel por buscar todas as informacoes na base de dados
+   * e retornar os dados paginado, com ou sem filtro, com ou sem includes e com ou ser ordenacao
+   */
   async getAll() {
    
     const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
