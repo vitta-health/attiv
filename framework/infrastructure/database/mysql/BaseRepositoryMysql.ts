@@ -24,14 +24,14 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
   /**
    * Metodo responsavel por receber as condicoes de uma query personalizada e realizar paginacao
-   * @param builderQuery Query sequelize com wheres, includes e attributes
+   * @param queryBuilder Query sequelize com wheres, includes e attributes
    * @param paginateParans Objeto recebido pela injecao de dependencia
    */
-  async paginate(builderQuery: Object){
+  async paginate(queryBuilder: Object){
     
     const result = await this.model.findAndCountAll({
       transaction: this.DbContext.getTransaction(),
-      ...builderQuery,
+      ...queryBuilder,
       offset: this.paginateParams.offset,
       limit: this.paginateParams.limit,
       order: this.paginateParams.order
