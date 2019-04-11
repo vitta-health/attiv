@@ -16,7 +16,6 @@ container.register({
 
 const vittaRouter = container.resolve('router');
 
-vittaRouter.use(PaginateHandler);
 vittaRouter.use(bodyParser.json());
 vittaRouter.use('/task', container.resolve('taskController').getRouter());
 

@@ -1,8 +1,12 @@
+import { PaginateHandler } from '../middlewares/paginateHandler';
+
 const { Router } = require('express');
 const bodyParser = require('body-parser');
 
 module.exports = () => {
   const router = Router();
+
+  router.use(PaginateHandler);
 
   const apiRouter = Router();
   apiRouter.use(bodyParser.json());
@@ -14,8 +18,6 @@ module.exports = () => {
   });
 
   router.use('/api', apiRouter);
-
-
 
   return router;
 };
