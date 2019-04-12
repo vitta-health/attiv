@@ -18,12 +18,11 @@ export default class TaskRepository extends BaseRepositoryMysql<TaskDomain>
     const queryBuilder = {
       where: {
         title: {
-          $like: '%' + title + '%',
+          [this._DbContext.db.Op.like]: '%' + title + '%',
         },
       },
       include: [
         {
-          as: 'sub_tasks',
           model: this._db.SubTasks,
         },
       ],
