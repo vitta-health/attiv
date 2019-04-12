@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const SubTasks = sequelize.define("SubTasks", {
+  const SubTasks = sequelize.define('SubTasks', {
     TaskId: DataTypes.INTEGER,
     title: DataTypes.STRING,
     description: DataTypes.STRING,

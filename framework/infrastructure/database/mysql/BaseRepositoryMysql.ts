@@ -27,6 +27,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         fields: [],
         includes: [],
         order: [],
+        includesRequired: false,
       };
     } else {
       this.paginateParams = paginateParams;
@@ -145,15 +146,21 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     const queryIncludesList = [];
 
     if (queryIncludes.length > 0) {
-      let include = {
-        required: false,
-      };
-
       queryIncludes.forEach(includeQuery => {
-        const model = this.DbContext.getModel(includeQuery);
+        let include = {
+          required: query.includesRequired,
+        };
+
+        const [entity, alias] = includeQuery.split('.');
+        const model = this.DbContext.getModel(entity);
+
+        if (alias !== undefined) {
+          include['as'] = alias;
+        }
+
         include['model'] = model;
 
-        const whereInclude = filterQ.filter(q => q.indexOf(includeQuery) >= 0);
+        const whereInclude = filterQ.filter(q => q.indexOf(entity) >= 0);
 
         let searchableFieldsIncludes = {};
         whereInclude.forEach(query => {
@@ -174,9 +181,9 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         });
 
         include['where'] = { ...searchableFieldsIncludes };
-      });
 
-      queryIncludesList.push(include);
+        queryIncludesList.push(include);
+      });
     }
 
     return { queryIncludesList, filterQ };

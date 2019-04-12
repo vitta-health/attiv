@@ -9,8 +9,11 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Task.associate = function(models) {
-    Task.hasMany(models.SubTasks);
+    Task.hasMany(models.SubTasks, {
+      as: 'sub_tasks',
+      foreignKey: 'TaskId',
+    });
   };
-  
+
   return Task;
 };

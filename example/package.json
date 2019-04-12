@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@types/mongodb": "^3.1.19",
-    "@types/sequelize": "^4.27.35",
+    "@types/sequelize": "^4.27.47",
     "awilix": "^4.2.0",
     "awilix-express": "^2.1.1",
     "body-parser": "^1.18.3",
@@ -23,7 +23,7 @@
     "log4js": "^4.0.2",
     "morgan": "^1.9.1",
     "mysql2": "^1.6.5",
-    "sequelize": "^4.42.0"
+    "sequelize": "^5.3.3"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",
