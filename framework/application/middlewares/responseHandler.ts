@@ -15,8 +15,8 @@ export function responseHandler(req: any, res, next: NextFunction) {
 
     if (res.statusCode == 200) {
       const resRequest = new ResponseRequest();
-      
-      if (data.paginate === true) {
+
+      if (data.paginate !== undefined && data.paginate === true) {
         resRequest.page = data.page;
         resRequest.pageSize = data.pageSize;
         resRequest.pages = data.pages;
