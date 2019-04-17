@@ -73,13 +73,24 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       if (!isNaN(value)) {
         searchableFields[key] = value;
       } else if (typeof value === 'string') {
-        searchableFields[key] = {
-          $like: `${value}%`,
-        };
+        if (value === 'true' || value === 'false') {
+          searchableFields[key] = null;
+          if (value === 'true') {
+            searchableFields[key] = {
+              $not: null,
+            };
+          }
+        } else {
+          searchableFields[key] = {
+            $like: `${value}%`,
+          };
+        }
       } else {
         searchableFields[key] = value;
       }
     });
+
+    console.log(searchableFields);
 
     const filter = {
       where: {
