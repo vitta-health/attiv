@@ -105,9 +105,6 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       }
     });
 
-    console.log(searchableFields);
-    console.log(amountSearchQueryIncludes.queryIncludesList);
-
     const filter = {
       where: {
         ...searchableFields,
