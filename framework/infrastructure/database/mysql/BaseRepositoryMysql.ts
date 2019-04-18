@@ -2,6 +2,8 @@ import IRepositoryGeneric from '../IRepositoryGeneric';
 import { Model, FindOptions } from 'sequelize';
 import DbContext from '../DbContext';
 import IQueryRequest from '../../../crosscutting/util/IQueryRequest';
+import { APIError } from 'attiv';
+import { messages } from 'attiv';
 
 export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
   private model: Model<any, any>;
@@ -64,22 +66,47 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
    * e retornar os dados paginado, com ou sem filtro, com ou sem includes e com ou ser ordenacao
    */
   async getAll() {
+    const modelAttributes = this.model['rawAttributes'];
+
     const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
 
     const searchableFields = {};
     amountSearchQueryIncludes.filterQ.forEach(query => {
       const [key, value] = query.split('=');
 
-      if (!isNaN(value)) {
-        searchableFields[key] = value;
-      } else if (typeof value === 'string') {
-        searchableFields[key] = {
-          $like: `${value}%`,
-        };
-      } else {
-        searchableFields[key] = value;
+      if (!value.length) {
+        throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
+      }
+
+      var typeAttributeName = modelAttributes[key]['type'].toString();
+
+      switch (true) {
+        case typeAttributeName.indexOf('VARCHAR') >= 0: {
+          searchableFields[key] = { $like: `${value}%` };
+          break;
+        }
+        case typeAttributeName.indexOf('DATE') >= 0: {
+          searchableFields[key] = null;
+          if (['true', 1, '1'].indexOf(value) >= 0) {
+            searchableFields[key] = {
+              $not: null,
+            };
+          }
+          break;
+        }
+        case typeAttributeName.indexOf('TINYINT') >= 0: {
+          searchableFields[key] = ['true', 1, '1'].indexOf(value) >= 0 ? 1 : 0;
+          break;
+        }
+        default: {
+          searchableFields[key] = value;
+          break;
+        }
       }
     });
+
+    console.log(searchableFields);
+    console.log(amountSearchQueryIncludes.queryIncludesList);
 
     const filter = {
       where: {
@@ -160,6 +187,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
         include['model'] = model;
 
+        const modelAttributes = model['rawAttributes'];
+
         const whereInclude = filterQ.filter(q => q.indexOf(entity) >= 0);
 
         let searchableFieldsIncludes = {};
@@ -169,14 +198,34 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
           const [key, value] = query.split('=');
           const [, relationValue] = key.split('.');
 
-          if (!isNaN(value)) {
-            searchableFieldsIncludes[relationValue] = value;
-          } else if (typeof value === 'string') {
-            searchableFieldsIncludes[relationValue] = {
-              $like: `${value}%`,
-            };
-          } else {
-            searchableFieldsIncludes[relationValue] = value;
+          if (!value.length) {
+            throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
+          }
+
+          var typeAttributeName = modelAttributes[relationValue]['type'].toString();
+
+          switch (true) {
+            case typeAttributeName.indexOf('VARCHAR') >= 0: {
+              searchableFieldsIncludes[relationValue] = { $like: `${value}%` };
+              break;
+            }
+            case typeAttributeName.indexOf('DATE') >= 0: {
+              searchableFieldsIncludes[relationValue] = null;
+              if (['true', 1, '1'].indexOf(value) >= 0) {
+                searchableFieldsIncludes[relationValue] = {
+                  $not: null,
+                };
+              }
+              break;
+            }
+            case typeAttributeName.indexOf('TINYINT') >= 0: {
+              searchableFieldsIncludes[relationValue] = ['true', 1, '1'].indexOf(value) >= 0 ? 1 : 0;
+              break;
+            }
+            default: {
+              searchableFieldsIncludes[relationValue] = value;
+              break;
+            }
           }
         });
 
