@@ -2,6 +2,8 @@ import IRepositoryGeneric from '../IRepositoryGeneric';
 import { Model, FindOptions } from 'sequelize';
 import DbContext from '../DbContext';
 import IQueryRequest from '../../../crosscutting/util/IQueryRequest';
+import { APIError } from 'attiv';
+import { messages } from 'attiv';
 
 export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
   private model: Model<any, any>;
@@ -70,10 +72,14 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     amountSearchQueryIncludes.filterQ.forEach(query => {
       const [key, value] = query.split('=');
 
+      if (!value.length) {
+        throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
+      }
+
       if (!isNaN(value)) {
         searchableFields[key] = value;
       } else if (typeof value === 'string') {
-        if (value === 'true' || value === 'false') {
+        if (['true', 'false'].indexOf(value) >= 0) {
           searchableFields[key] = null;
           if (value === 'true') {
             searchableFields[key] = {
@@ -89,8 +95,6 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         searchableFields[key] = value;
       }
     });
-
-    console.log(searchableFields);
 
     const filter = {
       where: {

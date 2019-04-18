@@ -17,8 +17,11 @@ const messages = {
     NOT_TRANSACTION: 'NO TRANSACTION OPEN',
   },
   RepositoryGeneric: {
-    COLUMN_NOT_EXIST: 'COLUMN NOT EXIST'
-  }
+    COLUMN_NOT_EXIST: 'COLUMN NOT EXIST',
+  },
+  Filter: {
+    VALUE_IS_NULL: 'FILTER QUERY IS NULL',
+  },
 };
 
 export default messages;
