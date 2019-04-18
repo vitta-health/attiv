@@ -78,7 +78,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
       }
 
-      var typeAttributeName = modelAttributes[key]['type'].toString();
+      const typeAttributeName = modelAttributes[key]['type'].toString();
 
       switch (true) {
         case typeAttributeName.indexOf('VARCHAR') >= 0: {
@@ -104,9 +104,6 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         }
       }
     });
-
-    console.log(searchableFields);
-    console.log(amountSearchQueryIncludes.queryIncludesList);
 
     const filter = {
       where: {
@@ -202,7 +199,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
             throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
           }
 
-          var typeAttributeName = modelAttributes[relationValue]['type'].toString();
+          const typeAttributeName = modelAttributes[relationValue]['type'].toString();
 
           switch (true) {
             case typeAttributeName.indexOf('VARCHAR') >= 0: {
