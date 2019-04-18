@@ -66,6 +66,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
    * e retornar os dados paginado, com ou sem filtro, com ou sem includes e com ou ser ordenacao
    */
   async getAll() {
+    const modelAttributes = this.model['rawAttributes'];
+
     const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
 
     const searchableFields = {};
@@ -76,25 +78,35 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
       }
 
-      if (!isNaN(value)) {
-        searchableFields[key] = value;
-      } else if (typeof value === 'string') {
-        if (['true', 'false'].indexOf(value) >= 0) {
+      var typeAttributeName = modelAttributes[key]['type'].toString();
+
+      switch (true) {
+        case typeAttributeName.indexOf('VARCHAR') >= 0: {
+          searchableFields[key] = { $like: `${value}%` };
+          break;
+        }
+        case typeAttributeName.indexOf('DATE') >= 0: {
           searchableFields[key] = null;
-          if (value === 'true') {
+          if (['true', 1, '1'].indexOf(value) >= 0) {
             searchableFields[key] = {
               $not: null,
             };
           }
-        } else {
-          searchableFields[key] = {
-            $like: `${value}%`,
-          };
+          break;
         }
-      } else {
-        searchableFields[key] = value;
+        case typeAttributeName.indexOf('TINYINT') >= 0: {
+          searchableFields[key] = ['true', 1, '1'].indexOf(value) >= 0 ? 1 : 0;
+          break;
+        }
+        default: {
+          searchableFields[key] = value;
+          break;
+        }
       }
     });
+
+    console.log(searchableFields);
+    console.log(amountSearchQueryIncludes.queryIncludesList);
 
     const filter = {
       where: {
@@ -175,6 +187,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
         include['model'] = model;
 
+        const modelAttributes = model['rawAttributes'];
+
         const whereInclude = filterQ.filter(q => q.indexOf(entity) >= 0);
 
         let searchableFieldsIncludes = {};
@@ -184,14 +198,34 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
           const [key, value] = query.split('=');
           const [, relationValue] = key.split('.');
 
-          if (!isNaN(value)) {
-            searchableFieldsIncludes[relationValue] = value;
-          } else if (typeof value === 'string') {
-            searchableFieldsIncludes[relationValue] = {
-              $like: `${value}%`,
-            };
-          } else {
-            searchableFieldsIncludes[relationValue] = value;
+          if (!value.length) {
+            throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
+          }
+
+          var typeAttributeName = modelAttributes[relationValue]['type'].toString();
+
+          switch (true) {
+            case typeAttributeName.indexOf('VARCHAR') >= 0: {
+              searchableFieldsIncludes[relationValue] = { $like: `${value}%` };
+              break;
+            }
+            case typeAttributeName.indexOf('DATE') >= 0: {
+              searchableFieldsIncludes[relationValue] = null;
+              if (['true', 1, '1'].indexOf(value) >= 0) {
+                searchableFieldsIncludes[relationValue] = {
+                  $not: null,
+                };
+              }
+              break;
+            }
+            case typeAttributeName.indexOf('TINYINT') >= 0: {
+              searchableFieldsIncludes[relationValue] = ['true', 1, '1'].indexOf(value) >= 0 ? 1 : 0;
+              break;
+            }
+            default: {
+              searchableFieldsIncludes[relationValue] = value;
+              break;
+            }
           }
         });
 
