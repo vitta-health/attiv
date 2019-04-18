@@ -1,6 +1,6 @@
 {
   "name": "attiv",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Fast framework for software development using node",
   "main": "./lib/index.ts",
   "types": "./lib/index.d.ts",
@@ -16,9 +16,6 @@
     "awilix",
     "awilix-express"
   ],
-  "_moduleAliases": {
-    "attiv": "./framework"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vitta-health/attiv.git"
