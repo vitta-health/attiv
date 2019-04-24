@@ -24,7 +24,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       this.paginateParams = {
         page: 1,
         limit: parseInt(process.env.LIMIT_PAGINATION) || 10,
-        offset: 1,
+        offset: 0,
         pageSize: parseInt(process.env.LIMIT_PAGINATION) || 10,
         fields: [],
         includes: [],
