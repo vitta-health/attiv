@@ -1,4 +1,4 @@
-import { BaseRepositoryMysql, IRepositoryGeneric } from 'attiv';
+import { BaseRepositoryMysql, IRepositoryGeneric, container, Metadados } from 'attiv';
 import TaskDomain from '../../domain/task/entities/Task';
 import ITaskRepository from '../../domain/task/irepositories/ITaskRepository';
 
@@ -7,10 +7,11 @@ import { Task } from '../database/models';
 export default class TaskRepository extends BaseRepositoryMysql<TaskDomain>
   implements ITaskRepository, IRepositoryGeneric<TaskDomain> {
   private _db;
-
-  constructor({ DbContext, db, paginateParams }) {
+  private event;
+  constructor({ DbContext, db, paginateParams, eventServiceProviderExample }) {
     super(Task, DbContext, paginateParams);
     this._db = db;
+    this.event = eventServiceProviderExample;
   }
 
   async getFindTaskByTitle(title: string) {
@@ -27,6 +28,12 @@ export default class TaskRepository extends BaseRepositoryMysql<TaskDomain>
         },
       ],
     };
+
+    const t = new Metadados();
+    t.data = queryBuilder;
+
+    this.event.send('AppListenersEventListener', t);
+
     return this.paginate(queryBuilder);
   }
 }
