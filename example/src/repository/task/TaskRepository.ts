@@ -31,7 +31,6 @@ export default class TaskRepository extends BaseRepositoryMysql<TaskDomain>
 
     const t = new Metadados();
     t.data = queryBuilder;
-
     this.event.send('AppListenersEventListener', t);
 
     return this.paginate(queryBuilder);

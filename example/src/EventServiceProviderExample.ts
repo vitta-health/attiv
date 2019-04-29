@@ -1,18 +1,15 @@
-import { EventAttiv, Orchestration } from 'attiv';
+import { Orchestration, EventDispatcher } from 'attiv';
 import { Message } from 'amqplib';
-import { eventNames } from 'cluster';
 
 class EventServiceProviderExample extends Orchestration {
   constructor() {
-    super();
+    super('OrchestrationRabbit');
   }
 
-  //@eventNames('EventServiceProviderExample.AppListenersEventListener')
+  @EventDispatcher.eventName(EventServiceProviderExample.AppListenersEventListener)
   static AppListenersEventListener(data: Message) {
-    console.log(JSON.parse(data.content.toString('utf8')));
+    console.log(data);
   }
 }
-
-Orchestration.setSubscribes(new EventAttiv(EventServiceProviderExample.AppListenersEventListener));
 
 export default { EventServiceProviderExample };
