@@ -1,6 +1,6 @@
 {
   "name": "attiv",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Fast framework for software development using node",
   "main": "./lib/index.ts",
   "types": "./lib/index.d.ts",
@@ -16,6 +16,9 @@
     "awilix",
     "awilix-express"
   ],
+  "_moduleAliases": {
+    "attiv": "./framework"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vitta-health/attiv.git"
@@ -23,9 +26,11 @@
   "author": "Vitta",
   "license": "ISC",
   "dependencies": {
+    "@types/amqplib": "^0.5.11",
     "@types/mongodb": "^3.1.19",
     "@types/morgan": "^1.7.35",
     "@types/sequelize": "^4.27.35",
+    "amqplib": "^0.5.3",
     "awilix": "^4.2.0",
     "awilix-express": "^2.1.1",
     "body-parser": "^1.18.3",
@@ -43,6 +48,7 @@
     "mongoose": "^5.4.10",
     "morgan": "^1.9.1",
     "mysql2": "^1.6.5",
+    "redis": "^2.8.0",
     "util": "^0.11.1",
     "winston": "^3.2.1"
   },
