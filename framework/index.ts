@@ -31,10 +31,10 @@ import IRepositoryGeneric from './infrastructure/database/IRepositoryGeneric';
 import BaseRepositoryMysql from './infrastructure/database/mysql/BaseRepositoryMysql';
 import BaseRepositoryMongo from './infrastructure/database/mongodb/BaseRepositoryMongo';
 import Server from './application/server';
-import orchestrationBase from './crosscutting/events/orchestrationBase';
+import storeBase from './crosscutting/events/storeBase';
 import Metadados from './crosscutting/events/integration/metadados';
 import EventAttiv from './crosscutting/events/integration/eventAttiv';
-import OrchestrationRabbit from './crosscutting/events/orchestrationRabbit';
+import StoreRabbitMQ from './crosscutting/events/storeRabbitMQ';
 import Orchestration from './crosscutting/events/orchestration';
 
 export {
@@ -63,9 +63,9 @@ export {
   BaseRepositoryMysql,
   BaseRepositoryMongo,
   BaseEntity,
-  orchestrationBase,
+  storeBase,
   Metadados,
   EventAttiv,
-  OrchestrationRabbit,
+  StoreRabbitMQ,
   Orchestration,
 };

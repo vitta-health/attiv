@@ -1,13 +1,13 @@
 import Metadados from './integration/metadados';
 import { EventEmitter } from 'events';
 import EventAttiv from './integration/eventAttiv';
-import IOrchestrationBase from './integration/IOrchestrationBase';
+import IStoreBase from './integration/IStoreBase';
 import Attivlogger from '../logging/logger';
 import messages from '../messages/message';
 
 var emitter = require('events').EventEmitter;
 
-export default class OrchestrationBase implements IOrchestrationBase {
+export default class StoreBase implements IStoreBase {
   private emitterEvent: EventEmitter;
 
   private subscribes: Array<EventAttiv> = [];

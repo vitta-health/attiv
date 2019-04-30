@@ -1,11 +1,11 @@
-import IOrchestrationBase from './integration/IOrchestrationBase';
 import Metadados from './integration/metadados';
 import * as amqp from 'amqplib/callback_api';
 import EventAttiv from './integration/eventAttiv';
 import Attivlogger from '../logging/logger';
 import messages from '../messages/message';
+import IStoreBase from './integration/IStoreBase';
 
-export default class OrchestrationRabbit implements IOrchestrationBase {
+export default class StoreRabbitMQ implements IStoreBase {
   private connetionRabbit: amqp.Connection;
 
   private subscribes: Array<EventAttiv> = [];

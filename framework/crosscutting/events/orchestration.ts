@@ -1,21 +1,22 @@
-import IOrchestrationBase from './integration/IOrchestrationBase';
-import OrchestrationRabbit from '../events/orchestrationRabbit';
+import IStoreBase from './integration/IStoreBase';
 import Metadados from './integration/metadados';
-import OrchestrationBase from './orchestrationBase';
 import EventAttiv from './integration/eventAttiv';
 
-export default class Orchestration implements IOrchestrationBase {
-  private orchestrationConfigInstance: IOrchestrationBase;
+import StoreBase from './storeBase';
+import StoreRabbitMQ from './storeRabbitMQ';
+
+export default class Orchestration implements IStoreBase {
+  private orchestrationConfigInstance: IStoreBase;
 
   static subscribes: Array<EventAttiv> = [];
 
   constructor(orchestrador: string) {
     switch (orchestrador) {
-      case 'OrchestrationRabbit':
-        this.orchestrationConfigInstance = new OrchestrationRabbit(Orchestration.subscribes);
+      case 'StoreRabbitMQ':
+        this.orchestrationConfigInstance = new StoreRabbitMQ(Orchestration.subscribes);
         break;
       default:
-        this.orchestrationConfigInstance = new OrchestrationBase(Orchestration.subscribes);
+        this.orchestrationConfigInstance = new StoreBase(Orchestration.subscribes);
     }
   }
 
