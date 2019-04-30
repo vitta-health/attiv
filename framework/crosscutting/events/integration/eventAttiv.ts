@@ -1,7 +1,9 @@
 export default class EventAttiv {
-  listener;
+  listener: Function;
+  name: string;
 
-  constructor(listener) {
+  constructor(listener: Function, name: string) {
     this.listener = listener;
+    this.name = name;
   }
 }

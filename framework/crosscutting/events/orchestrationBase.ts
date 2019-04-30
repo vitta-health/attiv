@@ -2,6 +2,8 @@ import Metadados from './integration/metadados';
 import { EventEmitter } from 'events';
 import EventAttiv from './integration/eventAttiv';
 import IOrchestrationBase from './integration/IOrchestrationBase';
+import Attivlogger from '../logging/logger';
+import messages from '../messages/message';
 
 var emitter = require('events').EventEmitter;
 
@@ -10,13 +12,15 @@ export default class OrchestrationBase implements IOrchestrationBase {
 
   private subscribes: Array<EventAttiv> = [];
 
-  constructor() {
+  constructor(subscribes: Array<EventAttiv>) {
+    this.subscribes = subscribes;
     this.emitterEvent = new emitter();
+    this.init();
   }
 
   init() {
     this.subscribes.forEach(subscribe => {
-      this.addListener(subscribe.listener, subscribe.listener.name);
+      this.addListener(subscribe.listener, subscribe.name);
     });
   }
 
@@ -26,6 +30,7 @@ export default class OrchestrationBase implements IOrchestrationBase {
    * @param metadado Objeto que deve ser inserido na fila
    */
   send(nameHandler: string, metadado: Metadados) {
+    Attivlogger.info(`${messages.BASE_QUEUES.MESSAGE_SEND}: ${nameHandler}`);
     this.emitterEvent.emit(nameHandler, metadado);
   }
 
@@ -35,8 +40,8 @@ export default class OrchestrationBase implements IOrchestrationBase {
    * @param callback Função que deve ser executada quando uma nova mensagem chegar na fila, caso essa função seja passada o desenvolvedor é responsavel
    * pelo que acontecer com a informação enviada
    */
-  addListener(handler: any, nameHandler?: string) {
-    this.emitterEvent.addListener(nameHandler !== undefined ? nameHandler : handler.name, handler);
+  addListener(handler: any, nameHandler: string) {
+    this.emitterEvent.addListener(nameHandler, handler);
   }
 
   /**
@@ -50,12 +55,12 @@ export default class OrchestrationBase implements IOrchestrationBase {
    * Método responsavel por retornar todas as mensagens da fila
    * @param queueName Nome da fila
    */
-  getMessagesQueue(handler: Function) {
-    return this.emitterEvent.listeners(handler.name);
+  getMessagesQueue(nameHandler: string) {
+    return this.emitterEvent.listeners(nameHandler);
   }
 
-  unsubscribe(handler: Function) {
-    this.emitterEvent.removeListener(handler.name, () => {});
+  unsubscribe(nameHandler: string) {
+    this.emitterEvent.removeListener(nameHandler, () => {});
   }
 
   /**

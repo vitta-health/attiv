@@ -3,9 +3,9 @@ import Metadados from './metadados';
 export default interface IOrchestrationBase {
   init();
   send(nameHandler: string, metadado: Metadados);
-  addListener(handler: any, nameHandler?: string);
+  addListener(handler: any, nameHandler: string);
   getChannels();
-  getMessagesQueue(handler: Function);
-  unsubscribe(handler: Function);
+  getMessagesQueue(nameHandler: string);
+  unsubscribe(nameHandler: string);
   sendAll(metadados: Metadados);
 }

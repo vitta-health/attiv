@@ -9,34 +9,44 @@ export default class Orchestration implements IOrchestrationBase {
 
   static subscribes: Array<EventAttiv> = [];
 
-  constructor() {
-    //const OrchestrationConfigEnv = process.env.ORCHESTRATION || 'OrchestrationBase';
-    this.orchestrationConfigInstance = new OrchestrationRabbit(Orchestration.subscribes);
+  constructor(orchestrador: string) {
+    switch (orchestrador) {
+      case 'OrchestrationRabbit':
+        this.orchestrationConfigInstance = new OrchestrationRabbit(Orchestration.subscribes);
+        break;
+      default:
+        this.orchestrationConfigInstance = new OrchestrationBase(Orchestration.subscribes);
+    }
   }
 
   static setSubscribes(subscribes: EventAttiv) {
     this.subscribes.push(subscribes);
   }
 
+  getInstance() {
+    return this.orchestrationConfigInstance;
+  }
+
   init() {
-    this.orchestrationConfigInstance.init();
+    return this.orchestrationConfigInstance.init();
   }
   send(nameHandler: string, metadado: Metadados) {
-    this.orchestrationConfigInstance.send(nameHandler, metadado);
+    return this.orchestrationConfigInstance.send(nameHandler, metadado);
   }
   addListener(handler: any, nameHandler?: string) {
-    this.orchestrationConfigInstance.addListener(handler, nameHandler);
+    return this.orchestrationConfigInstance.addListener(handler, nameHandler);
   }
+
   getChannels() {
     return this.orchestrationConfigInstance.getChannels();
   }
-  getMessagesQueue(handler: Function) {
-    return this.orchestrationConfigInstance.getMessagesQueue(handler);
+  getMessagesQueue(nameHandler: string) {
+    return this.orchestrationConfigInstance.getMessagesQueue(nameHandler);
   }
-  unsubscribe(handler: Function) {
-    return this.orchestrationConfigInstance.unsubscribe(handler);
+  unsubscribe(nameHandler: string) {
+    return this.orchestrationConfigInstance.unsubscribe(nameHandler);
   }
   sendAll(metadados: Metadados) {
-    this.orchestrationConfigInstance.sendAll(metadados);
+    return this.orchestrationConfigInstance.sendAll(metadados);
   }
 }
