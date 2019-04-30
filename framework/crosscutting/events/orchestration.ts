@@ -1,9 +1,10 @@
 import IStoreBase from './integration/IStoreBase';
-import Metadados from './integration/metadados';
+import Metadata from './integration/metadata';
 import EventAttiv from './integration/eventAttiv';
 
 import StoreBase from './storeBase';
 import StoreRabbitMQ from './storeRabbitMQ';
+import { StoreType } from './storeTypes';
 
 export default class Orchestration implements IStoreBase {
   private orchestrationConfigInstance: IStoreBase;
@@ -12,7 +13,7 @@ export default class Orchestration implements IStoreBase {
 
   constructor(orchestrador: string) {
     switch (orchestrador) {
-      case 'StoreRabbitMQ':
+      case StoreType.RABBITMQ:
         this.orchestrationConfigInstance = new StoreRabbitMQ(Orchestration.subscribes);
         break;
       default:
@@ -31,9 +32,11 @@ export default class Orchestration implements IStoreBase {
   init() {
     return this.orchestrationConfigInstance.init();
   }
-  send(nameHandler: string, metadado: Metadados) {
-    return this.orchestrationConfigInstance.send(nameHandler, metadado);
+
+  send(nameHandler: string, metadata: Metadata) {
+    return this.orchestrationConfigInstance.send(nameHandler, metadata);
   }
+
   addListener(handler: any, nameHandler?: string) {
     return this.orchestrationConfigInstance.addListener(handler, nameHandler);
   }
@@ -41,13 +44,16 @@ export default class Orchestration implements IStoreBase {
   getChannels() {
     return this.orchestrationConfigInstance.getChannels();
   }
+
   getMessagesQueue(nameHandler: string) {
     return this.orchestrationConfigInstance.getMessagesQueue(nameHandler);
   }
+
   unsubscribe(nameHandler: string) {
     return this.orchestrationConfigInstance.unsubscribe(nameHandler);
   }
-  sendAll(metadados: Metadados) {
-    return this.orchestrationConfigInstance.sendAll(metadados);
+
+  sendAll(metadata: Metadata) {
+    return this.orchestrationConfigInstance.sendAll(metadata);
   }
 }

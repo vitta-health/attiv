@@ -1,11 +1,11 @@
-import Metadados from './integration/metadados';
+import Metadata from './integration/metadata';
 import { EventEmitter } from 'events';
 import EventAttiv from './integration/eventAttiv';
 import IStoreBase from './integration/IStoreBase';
 import Attivlogger from '../logging/logger';
 import messages from '../messages/message';
 
-var emitter = require('events').EventEmitter;
+const emitter = require('events').EventEmitter;
 
 export default class StoreBase implements IStoreBase {
   private emitterEvent: EventEmitter;
@@ -29,9 +29,9 @@ export default class StoreBase implements IStoreBase {
    * @param queueName Nome da fila
    * @param metadado Objeto que deve ser inserido na fila
    */
-  send(nameHandler: string, metadado: Metadados) {
+  send(nameHandler: string, metadata: Metadata) {
     Attivlogger.info(`${messages.BASE_QUEUES.MESSAGE_SEND}: ${nameHandler}`);
-    this.emitterEvent.emit(nameHandler, metadado);
+    this.emitterEvent.emit(nameHandler, metadata);
   }
 
   /**
@@ -66,9 +66,9 @@ export default class StoreBase implements IStoreBase {
   /**
    * Metodo responsavel por enviar a mesma mensagem para todas as filas existentes
    */
-  sendAll(metadados: Metadados) {
+  sendAll(metadata: Metadata) {
     this.getChannels().forEach(channelName => {
-      this.emitterEvent.emit(channelName, metadados);
+      this.emitterEvent.emit(channelName, metadata);
     });
   }
 }

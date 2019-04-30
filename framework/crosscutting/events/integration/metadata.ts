@@ -1,4 +1,4 @@
-export default class Metadados {
+export default class Metadata {
   uniqueId: number;
   idProcess: any;
   data: any;

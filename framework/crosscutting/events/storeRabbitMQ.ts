@@ -1,4 +1,4 @@
-import Metadados from './integration/metadados';
+import Metadata from './integration/metadata';
 import * as amqp from 'amqplib/callback_api';
 import EventAttiv from './integration/eventAttiv';
 import Attivlogger from '../logging/logger';
@@ -28,32 +28,32 @@ export default class StoreRabbitMQ implements IStoreBase {
     });
   }
 
-  send(nameHandler: string, metadado: Metadados) {
-    this.connetionRabbit.createChannel((err, ch: amqp.Channel) => {
+  send(nameHandler: string, metadata: Metadata) {
+    this.connetionRabbit.createChannel((err, channel: amqp.Channel) => {
       if (err) {
         throw new Error(util.inspect(err));
       }
 
-      var ex = nameHandler;
-      var msg = JSON.stringify(metadado);
-      ch.assertQueue(ex);
-      ch.sendToQueue(ex, new Buffer(msg));
+      const ex = nameHandler;
+      const msg = JSON.stringify(metadata);
+      channel.assertQueue(ex);
+      channel.sendToQueue(ex, new Buffer(msg));
       Attivlogger.info(`${messages.RabbitMQ.MESSAGE_SEND}: ${nameHandler}`);
     });
   }
 
   addListener(handler: Function, nameHandler: string) {
-    this.connetionRabbit.createChannel((err, ch: amqp.Channel) => {
+    this.connetionRabbit.createChannel((err, channel: amqp.Channel) => {
       if (err) {
         throw new Error(util.inspect(err));
       }
 
-      var ex = nameHandler;
-      ch.assertQueue(ex, { durable: true });
-      ch.consume(ex, data => {
+      const ex = nameHandler;
+      channel.assertQueue(ex, { durable: true });
+      channel.consume(ex, data => {
         handler(data).then(
           response => {
-            ch.ack(data);
+            channel.ack(data);
             Attivlogger.info(`${messages.RabbitMQ.MESSAGE_SUCCESS}: ${nameHandler}`);
           },
           error => {
@@ -76,7 +76,7 @@ export default class StoreRabbitMQ implements IStoreBase {
     throw new Error(messages.all.METHOD_NOT_IMPLEMENTED);
   }
 
-  sendAll(metadados: Metadados) {
+  sendAll(metadata: Metadata) {
     throw new Error(messages.all.METHOD_NOT_IMPLEMENTED);
   }
 }

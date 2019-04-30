@@ -32,7 +32,7 @@ import BaseRepositoryMysql from './infrastructure/database/mysql/BaseRepositoryM
 import BaseRepositoryMongo from './infrastructure/database/mongodb/BaseRepositoryMongo';
 import Server from './application/server';
 import storeBase from './crosscutting/events/storeBase';
-import Metadados from './crosscutting/events/integration/metadados';
+import Metadata from './crosscutting/events/integration/metadata';
 import EventAttiv from './crosscutting/events/integration/eventAttiv';
 import StoreRabbitMQ from './crosscutting/events/storeRabbitMQ';
 import Orchestration from './crosscutting/events/orchestration';
@@ -64,7 +64,7 @@ export {
   BaseRepositoryMongo,
   BaseEntity,
   storeBase,
-  Metadados,
+  Metadata,
   EventAttiv,
   StoreRabbitMQ,
   Orchestration,

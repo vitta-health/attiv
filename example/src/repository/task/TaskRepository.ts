@@ -1,4 +1,4 @@
-import { BaseRepositoryMysql, IRepositoryGeneric, container, Metadados } from 'attiv';
+import { BaseRepositoryMysql, IRepositoryGeneric, Metadata } from 'attiv';
 import TaskDomain from '../../domain/task/entities/Task';
 import ITaskRepository from '../../domain/task/irepositories/ITaskRepository';
 
@@ -29,7 +29,7 @@ export default class TaskRepository extends BaseRepositoryMysql<TaskDomain>
       ],
     };
 
-    const meta = new Metadados();
+    const meta = new Metadata();
     meta.data = queryBuilder;
     meta.uniqueId = Math.random();
     this.event.send('AppListenersEventListener', meta);
