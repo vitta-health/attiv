@@ -4,6 +4,7 @@ import EventAttiv from './integration/eventAttiv';
 import Attivlogger from '../logging/logger';
 import messages from '../messages/message';
 import IStoreBase from './integration/IStoreBase';
+import * as util from 'util';
 
 export default class StoreRabbitMQ implements IStoreBase {
   private connetionRabbit: amqp.Connection;
@@ -16,6 +17,10 @@ export default class StoreRabbitMQ implements IStoreBase {
 
   init() {
     amqp.connect(process.env.RABBITMQ_HOST, (err, conn) => {
+      if (err) {
+        throw new Error(messages.RabbitMQ.CONNECTION_FAILED);
+      }
+
       this.connetionRabbit = conn;
       this.subscribes.forEach(subscribe => {
         this.addListener(subscribe.listener, subscribe.name);
@@ -25,6 +30,10 @@ export default class StoreRabbitMQ implements IStoreBase {
 
   send(nameHandler: string, metadado: Metadados) {
     this.connetionRabbit.createChannel((err, ch: amqp.Channel) => {
+      if (err) {
+        throw new Error(util.inspect(err));
+      }
+
       var ex = nameHandler;
       var msg = JSON.stringify(metadado);
       ch.assertQueue(ex);
@@ -35,6 +44,10 @@ export default class StoreRabbitMQ implements IStoreBase {
 
   addListener(handler: Function, nameHandler: string) {
     this.connetionRabbit.createChannel((err, ch: amqp.Channel) => {
+      if (err) {
+        throw new Error(util.inspect(err));
+      }
+
       var ex = nameHandler;
       ch.assertQueue(ex, { durable: true });
       ch.consume(ex, data => {
