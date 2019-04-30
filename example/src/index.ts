@@ -4,12 +4,13 @@ import TaskController from './application/controllers/TaskController';
 import TaskService from './domain/task/services/implementation/TaskService';
 import TaskRepository from './repository/task/TaskRepository';
 import bodyParser = require('body-parser');
-import eventAttiv from './EventServiceProviderExample';
+import EventServiceProviderExample from './EventServiceProviderExample';
+
 const db = require('./repository/database/models/index.js');
 
 container.register({
   config: asValue(process.env),
-  eventServiceProviderExample: asValue(new eventAttiv.EventServiceProviderExample()),
+  eventServiceProviderExample: asValue(new EventServiceProviderExample()),
   taskController: asClass(TaskController).scoped(),
   taskService: asClass(TaskService).scoped(),
   taskRepository: asClass(TaskRepository).scoped(),

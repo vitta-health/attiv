@@ -1,15 +1,19 @@
-import { Orchestration, EventDispatcher } from 'attiv';
+import { Orchestration, EventAttiv } from 'attiv';
 import { Message } from 'amqplib';
 
-class EventServiceProviderExample extends Orchestration {
+export default class EventServiceProviderExample extends Orchestration {
   constructor() {
     super('OrchestrationRabbit');
+    Orchestration.setSubscribes(new EventAttiv(this.AppListenersEventListener.bind(this), 'AppListenersEventListener'));
+    Orchestration.setSubscribes(new EventAttiv(this.Teste.bind(this), 'Teste'));
+    this.init();
   }
 
-  @EventDispatcher.eventName(EventServiceProviderExample.AppListenersEventListener)
-  static AppListenersEventListener(data: Message) {
-    console.log(data);
+  async AppListenersEventListener(data: Message): Promise<any> {
+    console.log(`MENSAGEM RECEBIDA NA FILA ${data.fields.routingKey} E TRATADA ${data.fields.deliveryTag} `);
+  }
+
+  async Teste(data: Message): Promise<any> {
+    throw new Error('OPS :!');
   }
 }
-
-export default { EventServiceProviderExample };

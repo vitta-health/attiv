@@ -29,9 +29,10 @@ export default class TaskRepository extends BaseRepositoryMysql<TaskDomain>
       ],
     };
 
-    const t = new Metadados();
-    t.data = queryBuilder;
-    this.event.send('AppListenersEventListener', t);
+    const meta = new Metadados();
+    meta.data = queryBuilder;
+    meta.uniqueId = Math.random();
+    this.event.send('AppListenersEventListener', meta);
 
     return this.paginate(queryBuilder);
   }
