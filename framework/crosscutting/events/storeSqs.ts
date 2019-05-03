@@ -47,7 +47,7 @@ export default class StoreSQS implements IStoreBase {
 
   async send(nameHandler: string, metadata: Metadata) {
     try {
-      let queueUrl = await this.getQueueUrl(nameHandler);
+      const queueUrl = await this.getQueueUrl(nameHandler);
 
       const params = {
         MessageBody: JSON.stringify(metadata),
@@ -138,7 +138,10 @@ export default class StoreSQS implements IStoreBase {
             try {
               deserialized.ReceiptHandle = message.ReceiptHandle;
               deserialized.Body = JSON.parse(message.Body);
-            } catch (error) {}
+            } catch (error) {
+              deserialized = null;
+              Attivlogger.info(`${messages.SQS.MESSAGE_JSON_INVALID}: ${nameHandler}`);
+            }
           });
         } else {
           deserialized = null;
@@ -151,7 +154,7 @@ export default class StoreSQS implements IStoreBase {
 
   async deleteMessage(nameHandler, receiptHandle) {
     return this.getQueueUrl(nameHandler).then(queueUrl => {
-      if (queueUrl == null) throw new Error(`${messages.SQS.MESSAGE_ERROR_FIND_QUEUE} : ${nameHandler} `);
+      if (queueUrl === null) throw new Error(`${messages.SQS.MESSAGE_ERROR_FIND_QUEUE} : ${nameHandler} `);
 
       const params = {
         QueueUrl: queueUrl,
@@ -164,8 +167,7 @@ export default class StoreSQS implements IStoreBase {
   async processMessages(nameHandler, handler, message) {
     return handler(message.Body)
       .then(result => {
-        const promises = [];
-        promises.push(this.deleteMessage(nameHandler, message.ReceiptHandle));
+        this.deleteMessage(nameHandler, message.ReceiptHandle);
         return Promise.all(message).then(() => result);
       })
       .catch(error => {});
