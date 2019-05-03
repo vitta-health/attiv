@@ -6,16 +6,6 @@ import IStoreBase from './integration/IStoreBase';
 import * as AWS from 'aws-sdk';
 import * as bluebird from 'bluebird';
 
-class UrlChave {
-  key: string;
-  url: string;
-
-  constructor(key: string, url: string) {
-    this.key = key;
-    this.url = url;
-  }
-}
-
 export default class StoreSQS implements IStoreBase {
   private subscribes: Array<EventAttiv> = [];
 
@@ -92,7 +82,7 @@ export default class StoreSQS implements IStoreBase {
       const params = {
         QueueName: nameHandler,
         Attributes: {
-          ReceiveMessageWaitTimeSeconds: this.WaitTimeSeconds,
+          ReceiveMessageWaitTimeSeconds: this.WaitTimeSeconds.toString(),
         },
       };
 
