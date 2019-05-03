@@ -32,7 +32,7 @@ export default class TaskRepository extends BaseRepositoryMysql<TaskDomain>
     const meta = new Metadata();
     meta.data = queryBuilder;
     meta.uniqueId = Math.random();
-    this.event.send('AppListenersEventListener', meta);
+    this.event.send('destiny-AppListenersEventListener', meta);
 
     return this.paginate(queryBuilder);
   }

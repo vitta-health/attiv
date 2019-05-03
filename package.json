@@ -30,6 +30,8 @@
     "amqplib": "^0.5.3",
     "awilix": "^4.2.0",
     "awilix-express": "^2.1.1",
+    "aws-sdk": "^2.447.0",
+    "bluebird": "^3.5.4",
     "body-parser": "^1.18.3",
     "class-transformer": "^0.2.0",
     "class-transformer-validator": "^0.6.0",
