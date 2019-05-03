@@ -162,7 +162,7 @@ export default class StoreSQS implements IStoreBase {
   }
 
   async processMessages(nameHandler, handler, message) {
-    return handler(message)
+    return handler(message.Body)
       .then(result => {
         const promises = [];
         promises.push(this.deleteMessage(nameHandler, message.ReceiptHandle));
