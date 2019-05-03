@@ -4,17 +4,21 @@ import EventAttiv from './integration/eventAttiv';
 
 import StoreBase from './storeBase';
 import StoreRabbitMQ from './storeRabbitMQ';
-import { StoreType } from './storeTypes';
+import StoreType from './storeTypes';
+import StoreSQS from './storeSqs';
 
 export default class Orchestration implements IStoreBase {
   private orchestrationConfigInstance: IStoreBase;
 
   static subscribes: Array<EventAttiv> = [];
 
-  constructor(orchestrador: string) {
+  constructor(orchestrador: StoreType) {
     switch (orchestrador) {
       case StoreType.RABBITMQ:
         this.orchestrationConfigInstance = new StoreRabbitMQ(Orchestration.subscribes);
+        break;
+      case StoreType.SQS:
+        this.orchestrationConfigInstance = new StoreSQS(Orchestration.subscribes);
         break;
       default:
         this.orchestrationConfigInstance = new StoreBase(Orchestration.subscribes);

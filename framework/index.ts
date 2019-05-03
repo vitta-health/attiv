@@ -36,6 +36,7 @@ import Metadata from './crosscutting/events/integration/metadata';
 import EventAttiv from './crosscutting/events/integration/eventAttiv';
 import StoreRabbitMQ from './crosscutting/events/storeRabbitMQ';
 import Orchestration from './crosscutting/events/orchestration';
+import StoreType from './crosscutting/events/storeTypes';
 
 export {
   container,
@@ -68,4 +69,5 @@ export {
   EventAttiv,
   StoreRabbitMQ,
   Orchestration,
+  StoreType,
 };

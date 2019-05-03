@@ -51,7 +51,15 @@ export default class StoreRabbitMQ implements IStoreBase {
       const ex = nameHandler;
       channel.assertQueue(ex, { durable: true });
       channel.consume(ex, data => {
-        handler(data).then(
+        let metadata: Metadata;
+
+        if (data.content) {
+          metadata = JSON.parse(data.content.toString('utf8'));
+        } else {
+          throw new Error(`${messages.RabbitMQ.MESSAGE_CONTENT_JSON_ERRO}`);
+        }
+
+        handler(metadata).then(
           response => {
             channel.ack(data);
             Attivlogger.info(`${messages.RabbitMQ.MESSAGE_SUCCESS}: ${nameHandler}`);
