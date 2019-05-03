@@ -1,4 +1,4 @@
-import { Orchestration, EventAttiv, StoreType } from 'attiv';
+import { Orchestration, EventAttiv, StoreType, Metadata } from 'attiv';
 import { Message } from 'amqplib';
 
 export default class EventServiceProviderExample extends Orchestration {
@@ -11,11 +11,11 @@ export default class EventServiceProviderExample extends Orchestration {
     this.init();
   }
 
-  async AppListenersEventListener(data: any): Promise<any> {
+  async AppListenersEventListener(data: Metadata): Promise<any> {
     console.log(`AppListenersEventListener MENSAGEM RECEBIDA NA FILA E TRATADA ${JSON.stringify(data)}`);
   }
 
-  async Teste(data: Message): Promise<any> {
+  async Teste(data: Metadata): Promise<any> {
     console.log(`Teste MENSAGEM RECEBIDA NA FILA E TRATADA ${JSON.stringify(data)}`);
   }
 }

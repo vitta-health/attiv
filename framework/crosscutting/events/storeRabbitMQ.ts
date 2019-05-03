@@ -56,7 +56,7 @@ export default class StoreRabbitMQ implements IStoreBase {
         if (data.content) {
           metadata = JSON.parse(data.content.toString('utf8'));
         } else {
-          throw new Error(`${messages.RabbitMQ.MESSAGE_CONTENT_JSO_ERRO}`);
+          throw new Error(`${messages.RabbitMQ.MESSAGE_CONTENT_JSON_ERRO}`);
         }
 
         handler(metadata).then(
