@@ -1,15 +1,12 @@
 import Metadata from './integration/metadata';
-import * as amqp from 'amqplib/callback_api';
 import EventAttiv from './integration/eventAttiv';
 import Attivlogger from '../logging/logger';
 import messages from '../messages/message';
 import IStoreBase from './integration/IStoreBase';
-import * as util from 'util';
 import * as AWS from 'aws-sdk';
 import * as bluebird from 'bluebird';
-import { EXDEV } from 'constants';
 
-class urlChave {
+class UrlChave {
   key: string;
   url: string;
 
@@ -19,12 +16,10 @@ class urlChave {
   }
 }
 
-export default class StoreRabbitMQ implements IStoreBase {
-  private connetionRabbit: amqp.Connection;
-
+export default class StoreSQS implements IStoreBase {
   private subscribes: Array<EventAttiv> = [];
 
-  private urlChaves = [];
+  private UrlChaves = [];
 
   private SQS: any;
 
@@ -67,24 +62,24 @@ export default class StoreRabbitMQ implements IStoreBase {
   }
 
   getQueueUrl(nameHandler: string): Promise<string> {
-    if (!this.SQS) throw new Error('${messages.SQS.MESSAGE_ERROR_INIT}');
+    if (!this.SQS) throw new Error(`${messages.SQS.MESSAGE_ERROR_INIT}`);
     if (!nameHandler) {
       return null;
-    } else if (!this.urlChaves[nameHandler]) {
+    } else if (!this.UrlChaves[nameHandler]) {
       const params = {
         QueueName: nameHandler,
       };
       return this.SQS.getQueueUrlPromise(params)
         .then(data => {
-          this.urlChaves[nameHandler] = data.QueueUrl;
-          return this.urlChaves[nameHandler];
+          this.UrlChaves[nameHandler] = data.QueueUrl;
+          return this.UrlChaves[nameHandler];
         })
         .catch(error => {
           return Promise.resolve(null);
         });
     }
 
-    return Promise.resolve(this.urlChaves[nameHandler]);
+    return Promise.resolve(this.UrlChaves[nameHandler]);
   }
 
   async createQueue(nameHandler: string): Promise<string> {
@@ -97,7 +92,7 @@ export default class StoreRabbitMQ implements IStoreBase {
       const params = {
         QueueName: nameHandler,
         Attributes: {
-          ReceiveMessageWaitTimeSeconds: '20',
+          ReceiveMessageWaitTimeSeconds: this.WaitTimeSeconds,
         },
       };
 
@@ -156,7 +151,7 @@ export default class StoreRabbitMQ implements IStoreBase {
 
   async deleteMessage(nameHandler, receiptHandle) {
     return this.getQueueUrl(nameHandler).then(queueUrl => {
-      if (queueUrl == null) throw new Error(`${messages.SQS.MESSAGE_ERROR_FIND_QUEUE} '${nameHandler}'`);
+      if (queueUrl == null) throw new Error(`${messages.SQS.MESSAGE_ERROR_FIND_QUEUE} : ${nameHandler} `);
 
       const params = {
         QueueUrl: queueUrl,
