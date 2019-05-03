@@ -35,7 +35,7 @@ export default class StoreSQS implements IStoreBase {
       process.env.aws_secret_access_key,
       null,
     );
-    AWS.config.update({ region: 'sa-east-1' });
+    AWS.config.update({ region: process.env.aws_region });
     this.SQS = new AWS.SQS({ apiVersion: '2012-11-05' });
 
     bluebird.promisifyAll(this.SQS, { suffix: 'Promise' });
