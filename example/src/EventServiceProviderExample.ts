@@ -3,7 +3,7 @@ import { Message } from 'amqplib';
 
 export default class EventServiceProviderExample extends Orchestration {
   constructor() {
-    super(StoreType.SQS);
+    super(StoreType.BASE);
     Orchestration.setSubscribes(
       new EventAttiv(this.AppListenersEventListener.bind(this), 'destiny-AppListenersEventListener'),
     );

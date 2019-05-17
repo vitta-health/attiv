@@ -70,40 +70,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
     const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
 
-    const searchableFields = {};
-    amountSearchQueryIncludes.filterQ.forEach(query => {
-      const [key, value] = query.split('=');
-
-      if (!value.length) {
-        throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
-      }
-
-      const typeAttributeName = modelAttributes[key]['type'].toString();
-
-      switch (true) {
-        case typeAttributeName.indexOf('VARCHAR') >= 0: {
-          searchableFields[key] = { $like: `${value}%` };
-          break;
-        }
-        case typeAttributeName.indexOf('DATE') >= 0: {
-          searchableFields[key] = null;
-          if (['true', 1, '1'].indexOf(value) >= 0) {
-            searchableFields[key] = {
-              $not: null,
-            };
-          }
-          break;
-        }
-        case typeAttributeName.indexOf('TINYINT') >= 0: {
-          searchableFields[key] = ['true', 1, '1'].indexOf(value) >= 0 ? 1 : 0;
-          break;
-        }
-        default: {
-          searchableFields[key] = value;
-          break;
-        }
-      }
-    });
+    const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes);
 
     const filter = {
       where: {
@@ -140,7 +107,21 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   }
 
   async findOne(id: string) {
-    return await this.model.findById(id, { transaction: this.DbContext.getTransaction() });
+    const modelAttributes = this.model['rawAttributes'];
+
+    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
+
+    const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes);
+
+    const filter = {
+      where: {
+        id,
+        ...searchableFields,
+      },
+      include: amountSearchQueryIncludes.queryIncludesList,
+    };
+
+    return await this.model.findOne({ ...filter });
   }
 
   public async beginTransaction() {
@@ -153,6 +134,45 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
   public rollback() {
     this.DbContext.rollback();
+  }
+
+  private searchableFields(amountSearchQueryIncludes, modelAttributes) {
+    const searchableFields = {};
+    amountSearchQueryIncludes.filterQ.forEach(query => {
+      const [key, value] = query.split('=');
+
+      if (!value.length) {
+        throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
+      }
+
+      const typeAttributeName = modelAttributes[key]['type'].toString();
+
+      switch (true) {
+        case typeAttributeName.indexOf('VARCHAR') >= 0: {
+          searchableFields[key] = { $like: `${value}%` };
+          break;
+        }
+        case typeAttributeName.indexOf('DATE') >= 0: {
+          searchableFields[key] = null;
+          if (['true', 1, '1'].indexOf(value) >= 0) {
+            searchableFields[key] = {
+              $not: null,
+            };
+          }
+          break;
+        }
+        case typeAttributeName.indexOf('TINYINT') >= 0: {
+          searchableFields[key] = ['true', 1, '1'].indexOf(value) >= 0 ? 1 : 0;
+          break;
+        }
+        default: {
+          searchableFields[key] = value;
+          break;
+        }
+      }
+    });
+
+    return searchableFields;
   }
 
   private amountSearchQueryIncludes(query: IQueryRequest) {
