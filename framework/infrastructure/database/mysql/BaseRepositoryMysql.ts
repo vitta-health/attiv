@@ -73,9 +73,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes);
 
     const filter = {
-      where: {
-        ...searchableFields,
-      },
+      ...searchableFields,
       include: amountSearchQueryIncludes.queryIncludesList,
     };
 
@@ -114,10 +112,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes);
 
     const filter = {
-      where: {
-        id,
-        ...searchableFields,
-      },
+      ...searchableFields,
       include: amountSearchQueryIncludes.queryIncludesList,
     };
 
@@ -138,6 +133,15 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
   private searchableFields(amountSearchQueryIncludes, modelAttributes) {
     const searchableFields = {};
+
+    const excludeAttributes = [];
+
+    Object.keys(modelAttributes).forEach(key => {
+      if (modelAttributes[key]['hidden'] === true) {
+        excludeAttributes.push(key);
+      }
+    });
+
     amountSearchQueryIncludes.filterQ.forEach(query => {
       const [key, value] = query.split('=');
 
@@ -172,7 +176,14 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       }
     });
 
-    return searchableFields;
+    const queryBuilder = {
+      attributes: {
+        exclude: excludeAttributes,
+      },
+      where: { ...searchableFields },
+    };
+
+    return queryBuilder;
   }
 
   private amountSearchQueryIncludes(query: IQueryRequest) {
@@ -203,8 +214,17 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         }
 
         include['model'] = model;
+        include['attributes'] = {
+          exclude: [],
+        };
 
         const modelAttributes = model['rawAttributes'];
+
+        Object.keys(modelAttributes).forEach(key => {
+          if (modelAttributes[key]['hidden'] === true) {
+            include['attributes'].exclude.push(key);
+          }
+        });
 
         const whereInclude = filterQ.filter(q => q.indexOf(entity) >= 0);
 
@@ -251,6 +271,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         queryIncludesList.push(include);
       });
     }
+
+    console.log(queryIncludesList);
 
     return { queryIncludesList, filterQ };
   }
