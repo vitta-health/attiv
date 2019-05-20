@@ -145,6 +145,10 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     amountSearchQueryIncludes.filterQ.forEach(query => {
       const [key, value] = query.split('=');
 
+      if (excludeAttributes.indexOf(key) >= 0) {
+        throw new APIError(`${key} - ${messages.Filter.FIELD_HIDDEN}`);
+      }
+
       if (!value.length) {
         throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
       }
@@ -207,6 +211,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         };
 
         const [entity, alias] = includeQuery.split('.');
+
         const model = this.DbContext.getModel(entity);
 
         if (alias !== undefined) {
@@ -234,6 +239,10 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
           const [key, value] = query.split('=');
           const [, relationValue] = key.split('.');
+
+          if (include['attributes'].exclude.indexOf(relationValue) >= 0) {
+            throw new APIError(`${key} - ${messages.Filter.FIELD_HIDDEN}`);
+          }
 
           if (!value.length) {
             throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
@@ -271,8 +280,6 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         queryIncludesList.push(include);
       });
     }
-
-    console.log(queryIncludesList);
 
     return { queryIncludesList, filterQ };
   }

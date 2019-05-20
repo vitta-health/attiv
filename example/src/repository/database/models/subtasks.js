@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     TaskId: DataTypes.INTEGER,
     title: {
       type: DataTypes.STRING,
-      hidden: true,
+      hidden: false,
     },
     description: DataTypes.STRING,
     ready: DataTypes.BOOLEAN,
