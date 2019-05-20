@@ -8,6 +8,10 @@ export function responseHandler(req: any, res, next: NextFunction) {
   const DbContext = req.container.resolve('DbContext') as DbContext;
 
   res.json = function(data) {
+    if (data === null) {
+      data = {};
+    }
+
     if (DbContext.getTransaction() != null) {
       DbContext.rollback();
       throw new Error(messages.responseHandler.EXIST_TRANSACTION_OPEN);

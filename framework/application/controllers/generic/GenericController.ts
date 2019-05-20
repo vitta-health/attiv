@@ -11,6 +11,7 @@ export default abstract class GenericController<T> implements IGenericController
   public getRouter() {
     const router = Router();
     router.get('/', this.index.bind(this));
+    router.get('/:id', this.show.bind(this));
     router.post('/', this.create.bind(this));
     router.put('/:id', this.update.bind(this));
     router.delete('/:id', this.delete.bind(this));
@@ -25,6 +26,14 @@ export default abstract class GenericController<T> implements IGenericController
   async index(req: Request, res: Response, nextn) {
     try {
       return res.status(200).json(await this.getService(req).getAll());
+    } catch (ex) {
+      nextn(ex);
+    }
+  }
+
+  async show(req: Request, res: Response, nextn: any) {
+    try {
+      return res.status(200).json(await this.getService(req).findOne(req.params.id));
     } catch (ex) {
       nextn(ex);
     }
