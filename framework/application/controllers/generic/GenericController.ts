@@ -2,7 +2,6 @@ import { Request, Response, Router } from 'express';
 import IGenericController from './IGenericController';
 
 export default abstract class GenericController<T> implements IGenericController {
- 
   public nameService: string;
 
   constructor(nameService: string) {
