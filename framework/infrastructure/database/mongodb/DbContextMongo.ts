@@ -8,7 +8,11 @@ export default class DbContextMongo {
 
   connect() {
     try {
-      mongoose.connect(process.env.MONGO_DB);
+      const CONNECTION_STRING = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${
+        process.env.MONGO_HOST
+      }:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`;
+
+      mongoose.connect(CONNECTION_STRING);
       return mongoose.connection;
     } catch (error) {
       throw new APIError(error);
