@@ -20,6 +20,9 @@
     "type": "git",
     "url": "git+https://github.com/vitta-health/attiv.git"
   },
+  "_moduleAliases": {
+    "attiv": "./framework"
+  },
   "author": "Vitta",
   "license": "ISC",
   "dependencies": {

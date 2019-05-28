@@ -1,6 +1,8 @@
 import { APIError } from '../../../crosscutting/exceptions/APIError';
+import { IRepositoryGeneric } from '../../..';
+import messages from '../../../crosscutting/messages/message';
 
-export default abstract class BaseRepositoryMongo<T> {
+export default abstract class BaseRepositoryMongo<T> implements IRepositoryGeneric<T> {
   private model: any;
 
   constructor(model: any) {
@@ -8,21 +10,31 @@ export default abstract class BaseRepositoryMongo<T> {
   }
 
   create(item: T) {
-    return this.model.insert(item);
+    return new this.model(item).save();
   }
   update(id: string, item: T) {
-    throw new APIError('Method not implemented');
+    return this.model.findByIdAndUpdate(id, item, { new: true });
   }
   delete(id: string) {
-    return this.model.remove({ id });
+    return this.model.findByIdAndDelete(id);
   }
   find(item: T) {
     return this.model.find(item);
   }
   findOne(id: string) {
-    return this.model.find({ id });
+    return this.model.findById(id);
   }
   getAll() {
-    return this.model.find();
+    return this.model.find().exec();
+  }
+
+  beginTransaction() {
+    throw new Error(messages.DbContextoMongo.NOT_HAVE_TRANSACTION);
+  }
+  commit() {
+    throw new Error(messages.DbContextoMongo.NOT_HAVE_TRANSACTION);
+  }
+  rollback() {
+    throw new Error(messages.DbContextoMongo.NOT_HAVE_TRANSACTION);
   }
 }

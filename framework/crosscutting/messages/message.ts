@@ -19,6 +19,10 @@ const messages = {
   DbContexto: {
     NOT_TRANSACTION: 'NO TRANSACTION OPEN',
   },
+  DbContextoMongo: {
+    NOT_CONNECTED: 'MONGODB CONNECTION ERROR',
+    NOT_HAVE_TRANSACTION: 'MONGODB DOES NOT HAVE TRANSACTION CONTROL',
+  },
   RepositoryGeneric: {
     COLUMN_NOT_EXIST: 'COLUMN NOT EXIST',
   },

@@ -1,4 +1,4 @@
-import { Orchestration, EventAttiv, StoreType, Metadata } from 'attiv';
+import { Orchestration, EventAttiv, StoreType, Metadata, container } from 'attiv';
 import { Message } from 'amqplib';
 
 export default class EventServiceProviderExample extends Orchestration {
