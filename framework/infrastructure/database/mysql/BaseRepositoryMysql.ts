@@ -146,7 +146,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       const [key, value] = query.split('=');
 
       if (excludeAttributes.indexOf(key) >= 0) {
-        throw new APIError(`${key} - ${messages.Filter.FIELD_HIDDEN}`);
+        throw new APIError(`${key} - ${messages.Filter.FIELD_HIDDEN_CONTEXT}`);
       }
 
       if (!value.length) {
@@ -241,7 +241,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
           const [, relationValue] = key.split('.');
 
           if (include['attributes'].exclude.indexOf(relationValue) >= 0) {
-            throw new APIError(`${key} - ${messages.Filter.FIELD_HIDDEN}`);
+            throw new APIError(`${key} - ${messages.Filter.FIELD_HIDDEN_CONTEXT}`);
           }
 
           if (!value.length) {
