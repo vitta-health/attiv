@@ -1,4 +1,4 @@
-import { GenericController, IGenericController } from 'attiv';
+import { GenericController, IGenericController, container } from 'attiv';
 import ITaskService from '../../domain/task/services/interface/ITaskService';
 
 import { Router, Request } from 'express';

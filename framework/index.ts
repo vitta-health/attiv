@@ -37,6 +37,7 @@ import EventAttiv from './crosscutting/events/integration/eventAttiv';
 import StoreRabbitMQ from './crosscutting/events/storeRabbitMQ';
 import Orchestration from './crosscutting/events/orchestration';
 import StoreType from './crosscutting/events/storeTypes';
+import DbContextMongo from './infrastructure/database/mongodb/DbContextMongo';
 
 export {
   container,
@@ -70,4 +71,5 @@ export {
   StoreRabbitMQ,
   Orchestration,
   StoreType,
+  DbContextMongo,
 };
