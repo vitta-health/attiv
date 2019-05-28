@@ -24,6 +24,7 @@ const messages = {
   },
   Filter: {
     VALUE_IS_NULL: 'FILTER QUERY IS NULL',
+    FIELD_HIDDEN: 'FIELD DISABLED FOR QUERY DYNAMIC',
   },
   RabbitMQ: {
     CONNECTION_FAILED: 'ERROR CONNECT RABBITMQ',

@@ -4,8 +4,14 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.STRING,
     email: DataTypes.STRING,
     ready: DataTypes.BOOLEAN,
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE,
+    createdAt: {
+      type: DataTypes.DATE,
+      hidden: true,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      hidden: true,
+    },
   });
 
   Task.associate = function(models) {

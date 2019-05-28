@@ -1,11 +1,20 @@
 module.exports = (sequelize, DataTypes) => {
-  const SubTasks = sequelize.define("SubTasks", {
+  const SubTasks = sequelize.define('SubTasks', {
     TaskId: DataTypes.INTEGER,
-    title: DataTypes.STRING,
+    title: {
+      type: DataTypes.STRING,
+      hidden: false,
+    },
     description: DataTypes.STRING,
     ready: DataTypes.BOOLEAN,
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE,
+    createdAt: {
+      type: DataTypes.DATE,
+      hidden: true,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      hidden: true,
+    },
   });
 
   SubTasks.associate = function(models) {
