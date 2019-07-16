@@ -16,6 +16,7 @@ export default class DbContextMongo {
         }:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=${process.env.MONGO_AUTH_DB}`;
 
         mongoose.connect(CONNECTION_STRING);
+
         return mongoose.connection;
       } catch (error) {
         throw new APIError(error);
