@@ -19,12 +19,14 @@ export default class StoreSQS implements IStoreBase {
     this.subscribes = subscribes;
   }
 
-  init() {
-    AWS.config.credentials = new AWS.Credentials(
-      process.env.AWS_ACCESS_KEY_ID,
-      process.env.AWS_SECRET_ACCESS_KEY,
-      null,
-    );
+  init(serverless = false) {
+    if (serverless) {
+      AWS.config.credentials = new AWS.Credentials(
+        process.env.AWS_ACCESS_KEY_ID,
+        process.env.AWS_SECRET_ACCESS_KEY,
+        null,
+      );
+    }
     AWS.config.update({ region: process.env.AWS_REGION });
     this.SQS = new AWS.SQS({ apiVersion: '2012-11-05' });
 
