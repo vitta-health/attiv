@@ -65,7 +65,8 @@ export default class StoreSQS implements IStoreBase {
           return this.UrlChaves[nameHandler];
         })
         .catch(error => {
-          return Promise.resolve(null);
+          Attivlogger.error(`${messages.SQS.MESSAGE_ERROR_GETURL}: ${nameHandler}`);
+          throw error;
         });
     }
 
