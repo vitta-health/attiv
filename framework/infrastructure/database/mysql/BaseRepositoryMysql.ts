@@ -32,6 +32,14 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         includesRequired: false,
       };
     } else {
+      paginateParams.limit =
+        paginateParams.limit > parseInt(process.env.LIMIT_PAGINATION) || 10
+          ? parseInt(process.env.LIMIT_PAGINATION) || 10
+          : paginateParams.limit;
+      paginateParams.pageSize =
+        paginateParams.pageSize > parseInt(process.env.LIMIT_PAGINATION) || 10
+          ? parseInt(process.env.LIMIT_PAGINATION) || 10
+          : paginateParams.limit;
       this.paginateParams = paginateParams;
     }
   }
