@@ -32,14 +32,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         includesRequired: false,
       };
     } else {
-      paginateParams.limit =
-        paginateParams.limit > parseInt(process.env.LIMIT_PAGINATION) || 10
-          ? parseInt(process.env.LIMIT_PAGINATION) || 10
-          : paginateParams.limit;
-      paginateParams.pageSize =
-        paginateParams.pageSize > parseInt(process.env.LIMIT_PAGINATION) || 10
-          ? parseInt(process.env.LIMIT_PAGINATION) || 10
-          : paginateParams.limit;
+      paginateParams.limit = this.verifyLimitPaginate(paginateParams.limit);
+      paginateParams.pageSize = this.verifyLimitPaginate(paginateParams.pageSize);
       this.paginateParams = paginateParams;
     }
   }
@@ -69,10 +63,15 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     return data;
   }
 
+  private verifyLimitPaginate(valor: number): number {
+    return valor > parseInt(process.env.LIMIT_PAGINATION) || 10 ? parseInt(process.env.LIMIT_PAGINATION) || 10 : valor;
+  }
+
   /**
    * Metodo responsavel por buscar todas as informacoes na base de dados
    * e retornar os dados paginado, com ou sem filtro, com ou sem includes e com ou ser ordenacao
    */
+
   async getAll() {
     const modelAttributes = this.model['rawAttributes'];
 
