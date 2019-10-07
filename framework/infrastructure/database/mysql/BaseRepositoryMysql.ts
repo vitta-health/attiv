@@ -32,8 +32,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         includesRequired: false,
       };
     } else {
-      paginateParams.limit = this.verifyLimitPaginate(paginateParams.limit);
-      paginateParams.pageSize = this.verifyLimitPaginate(paginateParams.pageSize);
+      paginateParams.limit = this.verifyPageLimit(paginateParams.limit);
+      paginateParams.pageSize = this.verifyPageLimit(paginateParams.pageSize);
       this.paginateParams = paginateParams;
     }
   }
@@ -63,7 +63,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     return data;
   }
 
-  private verifyLimitPaginate(valor: number): number {
+  private verifyPageLimit(valor: number): number {
     return valor > parseInt(process.env.LIMIT_PAGINATION) || 10 ? parseInt(process.env.LIMIT_PAGINATION) || 10 : valor;
   }
 
