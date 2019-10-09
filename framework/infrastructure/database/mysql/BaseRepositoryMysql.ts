@@ -32,6 +32,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         includesRequired: false,
       };
     } else {
+      paginateParams.limit = this.verifyPageLimit(paginateParams.limit);
+      paginateParams.pageSize = this.verifyPageLimit(paginateParams.pageSize);
       this.paginateParams = paginateParams;
     }
   }
@@ -61,10 +63,15 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     return data;
   }
 
+  private verifyPageLimit(valor: number): number {
+    return valor > parseInt(process.env.LIMIT_PAGINATION) || 10 ? parseInt(process.env.LIMIT_PAGINATION) || 10 : valor;
+  }
+
   /**
    * Metodo responsavel por buscar todas as informacoes na base de dados
    * e retornar os dados paginado, com ou sem filtro, com ou sem includes e com ou ser ordenacao
    */
+
   async getAll() {
     const modelAttributes = this.model['rawAttributes'];
 
