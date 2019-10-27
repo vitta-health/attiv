@@ -7,17 +7,14 @@ module.exports = () => {
   const router = Router();
 
   router.use(PaginateHandler);
+  router.use(bodyParser.json())
 
-  const apiRouter = Router();
-  apiRouter.use(bodyParser.json());
+  router.use('/healthcheck', (req, res, next) => {
 
-  apiRouter.use('/check', (req, res, next) => {
     return res
       .status(200)
-      .json({ message: `Hello, I'm attiv and I'm here to help you develop software faster, robust and secure.` });
+      .json({ message: `Hello, i'm attiv and i'm here to help you develop software faster, robust and secure. The process is running for ${Math.floor(process.uptime())} seconds` });
   });
-
-  router.use('/api', apiRouter);
 
   return router;
 };
