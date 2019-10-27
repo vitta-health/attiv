@@ -1,18 +1,27 @@
 import { NextFunction } from 'connect';
-import DbContext from '../../infrastructure/database/DbContext';
-import messages from '../../crosscutting/messages/message';
 import { ResponseRequest } from '../..';
+
+import logger from "../../crosscutting/logging/logger";
+import messages from '../../crosscutting/messages/message';
+import DbContext from '../../infrastructure/database/DbContext';
+
 
 export function responseHandler(req: any, res, next: NextFunction) {
   const json_ = res.json;
-  const DbContext = req.container.resolve('DbContext') as DbContext;
+  let DbContext;
 
-  res.json = function(data) {
+  try {
+    DbContext = req.container.resolve('DbContext') as DbContext;
+  } catch (err) {
+    logger.info('This project doens\'t contains a DbContext class')
+  }
+
+  res.json = function (data) {
     if (data === null) {
       data = {};
     }
 
-    if (DbContext.getTransaction() != null) {
+    if (DbContext && DbContext.getTransaction() != null) {
       DbContext.rollback();
       throw new Error(messages.responseHandler.EXIST_TRANSACTION_OPEN);
     }
