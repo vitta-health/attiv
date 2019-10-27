@@ -13,7 +13,7 @@ module.exports = () => {
 
     return res
       .status(200)
-      .json({ message: `Hello, I'm attiv and i'm here to help you develop software faster, robust and secure. The process is running for ${Math.floor(process.uptime()) / 60} minutes` });
+      .json({ message: `Hello, i'm attiv and i'm here to help you develop software faster, robust and secure. The process is running for ${Math.floor(process.uptime())} seconds` });
   });
 
   return router;
