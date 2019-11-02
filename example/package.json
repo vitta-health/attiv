@@ -23,7 +23,7 @@
     "log4js": "^4.0.2",
     "morgan": "^1.9.1",
     "mysql2": "^1.6.5",
-    "sequelize": "^5.3.3"
+    "sequelize": "^5.15.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",
