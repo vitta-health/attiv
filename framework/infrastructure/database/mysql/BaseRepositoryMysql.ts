@@ -71,7 +71,6 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
    * Metodo responsavel por buscar todas as informacoes na base de dados
    * e retornar os dados paginado, com ou sem filtro, com ou sem includes e com ou ser ordenacao
    */
-
   async getAll() {
     const modelAttributes = this.model['rawAttributes'];
 
@@ -96,6 +95,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       where: {
         id: id,
       },
+      individualHooks: true,
       transaction: this.DbContext.getTransaction(),
     });
   }
@@ -103,6 +103,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   async delete(id: string) {
     return await this.model.destroy({
       where: { id },
+      individualHooks: true,
       transaction: this.DbContext.getTransaction(),
     });
   }
@@ -122,6 +123,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       ...searchableFields,
       include: amountSearchQueryIncludes.queryIncludesList,
     };
+
+    filter['where'] = { id: +id };
 
     return await this.model.findOne({ ...filter });
   }

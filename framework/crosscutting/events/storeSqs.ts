@@ -39,12 +39,29 @@ export default class StoreSQS implements IStoreBase {
 
   async send(nameHandler: string, metadata: Metadata) {
     try {
-      const queueUrl = await this.getQueueUrl(nameHandler);
+      let queueUrl = await this.getQueueUrl(nameHandler);
 
-      const params = {
-        MessageBody: JSON.stringify(metadata),
-        QueueUrl: queueUrl,
-      };
+      if (!queueUrl) {
+        await this.createQueue(nameHandler);
+        queueUrl = await this.getQueueUrl(nameHandler);
+      }
+
+      let params;
+      if (this.isFifoQueue(nameHandler)) {
+        const messageDeduplicationId = String(Math.random());
+        params = {
+          MessageBody: JSON.stringify(metadata),
+          QueueUrl: queueUrl,
+          MessageGroupId: '1',
+          MessageDeduplicationId: messageDeduplicationId,
+        };
+      } else {
+        params = {
+          MessageBody: JSON.stringify(metadata),
+          QueueUrl: queueUrl,
+        };
+      }
+
       Attivlogger.info(`${messages.SQS.MESSAGE_SEND}: ${nameHandler}`);
       return this.SQS.sendMessagePromise(params);
     } catch (ex) {
@@ -68,7 +85,7 @@ export default class StoreSQS implements IStoreBase {
         })
         .catch(error => {
           Attivlogger.error(`${messages.SQS.MESSAGE_ERROR_GETURL}: ${nameHandler}`);
-          throw error;
+          return null;
         });
     }
 
@@ -82,11 +99,21 @@ export default class StoreSQS implements IStoreBase {
         return Promise.resolve(queueUrl);
       }
 
+      let attributes;
+      if (this.isFifoQueue(nameHandler)) {
+        attributes = {
+          ReceiveMessageWaitTimeSeconds: this.WaitTimeSeconds.toString(),
+          FifoQueue: 'true',
+        };
+      } else {
+        attributes = {
+          ReceiveMessageWaitTimeSeconds: this.WaitTimeSeconds.toString(),
+        };
+      }
+
       const params = {
         QueueName: nameHandler,
-        Attributes: {
-          ReceiveMessageWaitTimeSeconds: this.WaitTimeSeconds.toString(),
-        },
+        Attributes: attributes,
       };
 
       queueUrl = this.SQS.createQueuePromise(params);
@@ -98,6 +125,11 @@ export default class StoreSQS implements IStoreBase {
       Attivlogger.error(`${messages.SQS.MESSAGE_ERROR_CREATE_QUEUE}: ${nameHandler}`);
       throw ex;
     }
+  }
+
+  private isFifoQueue(nameHandler: string): Boolean {
+    const splitNameHandler = nameHandler.split('.');
+    return splitNameHandler[splitNameHandler.length - 1] === 'fifo';
   }
 
   async addListener(handler: Function, nameHandler: string) {

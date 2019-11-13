@@ -38,6 +38,7 @@ import StoreRabbitMQ from './crosscutting/events/storeRabbitMQ';
 import Orchestration from './crosscutting/events/orchestration';
 import StoreType from './crosscutting/events/storeTypes';
 import DbContextMongo from './infrastructure/database/mongodb/DbContextMongo';
+import AuditLoggerSequelizeConfig from './infrastructure/database/AuditLoggerSequelizeConfig';
 
 export {
   container,
@@ -72,4 +73,5 @@ export {
   Orchestration,
   StoreType,
   DbContextMongo,
+  AuditLoggerSequelizeConfig,
 };
