@@ -1,24 +1,27 @@
 import IRepositoryGeneric from '../IRepositoryGeneric';
-import { Model, FindOptions } from 'sequelize';
+import { FindOptions } from 'sequelize';
 import DbContext from '../DbContext';
 import IQueryRequest from '../../../crosscutting/util/IQueryRequest';
 import { APIError } from 'attiv';
 import { messages } from 'attiv';
 
 export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
-  private model: Model<any, any>;
+  private model: any;
   private DbContext: DbContext;
   private paginateParams: IQueryRequest;
+  private _user: any;
 
   /**
    *
+   * @param user Esta informacao e utilizada no log de auditoria para identificar quem esta alterando os dados
    * @param model Object modelo que sera usado para realizar as operacoes no banco de dados
    * @param DbContext Contexto do banco para controle de transacao
    * @param paginateParams Parametros enviados na requisicao, que sao usados para paginacao e filtro
    */
-  constructor(model: any, DbContext: DbContext, paginateParams?: IQueryRequest) {
+  constructor(model: any, DbContext: DbContext, user: any, paginateParams?: IQueryRequest) {
     this.model = model;
     this.DbContext = DbContext;
+    this._user = user;
 
     if (paginateParams === undefined) {
       this.paginateParams = {
@@ -87,7 +90,10 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   }
 
   async create(item: T) {
-    return await this.model.create(item, { transaction: this.DbContext.getTransaction() });
+    return await this.model.create(item, {
+      transaction: this.DbContext.getTransaction(),
+      user: this._user,
+    });
   }
 
   async update(id: string, item: T) {
@@ -97,6 +103,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       },
       individualHooks: true,
       transaction: this.DbContext.getTransaction(),
+      user: this._user,
     });
   }
 
@@ -105,6 +112,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       where: { id },
       individualHooks: true,
       transaction: this.DbContext.getTransaction(),
+      user: this._user,
     });
   }
 

@@ -8,8 +8,8 @@ export default class TaskRepository extends BaseRepositoryMysql<TaskDomain>
   implements ITaskRepository, IRepositoryGeneric<TaskDomain> {
   private _db;
   private event;
-  constructor({ DbContext, db, paginateParams, eventServiceProviderExample }) {
-    super(Task, DbContext, paginateParams);
+  constructor({ DbContext, db, paginateParams, eventServiceProviderExample, user }) {
+    super(Task, DbContext, user, paginateParams);
     this._db = db;
     this.event = eventServiceProviderExample;
   }

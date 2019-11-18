@@ -1,7 +1,7 @@
 import DBOperationType from './AuditLogOperationType';
 
 export default class AuditLog {
-  private _userId: string;
+  private _user: string;
 
   private _operationType: DBOperationType;
 
@@ -13,8 +13,8 @@ export default class AuditLog {
 
   constructor() {}
 
-  get userId() {
-    return this._userId;
+  get user() {
+    return this._user;
   }
 
   get operationType() {
@@ -33,8 +33,8 @@ export default class AuditLog {
     return this._newValues;
   }
 
-  set userId(userId: string) {
-    this._userId = userId;
+  set user(user: string) {
+    this._user = user;
   }
 
   set operationType(operationType: DBOperationType) {
