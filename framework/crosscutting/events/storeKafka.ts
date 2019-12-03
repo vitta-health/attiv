@@ -11,7 +11,7 @@ export default class StoreSQS implements IStoreBase {
 
   private consumers: Object = {};
 
-  private kafka: any;
+  private kafka: Kafka;
 
   constructor(subscribes: Array<EventAttiv>) {
     this.subscribes = subscribes;
