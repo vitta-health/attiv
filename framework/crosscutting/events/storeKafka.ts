@@ -6,7 +6,7 @@ import Attivlogger from '../logging/logger';
 import messages from '../messages/message';
 import IStoreBase from './integration/IStoreBase';
 
-export default class StoreSQS implements IStoreBase {
+export default class StoreKafka implements IStoreBase {
   private subscribes: Array<EventAttiv> = [];
 
   private consumers: Object = {};
