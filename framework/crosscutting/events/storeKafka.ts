@@ -26,7 +26,9 @@ export default class StoreKafka implements IStoreBase {
     });
 
     this.subscribes.forEach(subscribe => {
-      this.addListener(subscribe.listener, subscribe.name);
+      if (subscribe.listener && subscribe.name) {
+        this.addListener(subscribe.listener, subscribe.name);
+      }
     });
   }
 
