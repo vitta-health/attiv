@@ -6,6 +6,7 @@ import StoreBase from './storeBase';
 import StoreRabbitMQ from './storeRabbitMQ';
 import StoreType from './storeTypes';
 import StoreSQS from './storeSqs';
+import StoreKafka from './storeKafka';
 
 export default class Orchestration implements IStoreBase {
   private orchestrationConfigInstance: IStoreBase;
@@ -19,6 +20,9 @@ export default class Orchestration implements IStoreBase {
         break;
       case StoreType.SQS:
         this.orchestrationConfigInstance = new StoreSQS(Orchestration.subscribes);
+        break;
+      case StoreType.KAFKA:
+        this.orchestrationConfigInstance = new StoreKafka(Orchestration.subscribes);
         break;
       default:
         this.orchestrationConfigInstance = new StoreBase(Orchestration.subscribes);
