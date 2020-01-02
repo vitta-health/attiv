@@ -27,20 +27,20 @@ export default class DbContext {
     }
   }
 
-  public commit() {
+  public async commit() {
     if (!this.transaction) throw new Error(messages.DbContexto.NOT_TRANSACTION);
 
     if (this.countTransaction === 1) {
-      this.transaction.commit();
+      await this.transaction.commit();
       this.transaction = null;
     }
     this.countTransaction--;
   }
 
-  public rollback() {
+  public async rollback() {
     if (!this.transaction) throw new Error(messages.DbContexto.NOT_TRANSACTION);
     if (this.countTransaction === 1) {
-      this.transaction.rollback();
+      await this.transaction.rollback();
       this.transaction = null;
     }
     this.countTransaction--;

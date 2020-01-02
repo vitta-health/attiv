@@ -130,12 +130,12 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     await this.DbContext.beginTransaction();
   }
 
-  public commit() {
-    this.DbContext.commit();
+  public async commit() {
+    await this.DbContext.commit();
   }
 
-  public rollback() {
-    this.DbContext.rollback();
+  public async rollback() {
+    await this.DbContext.rollback();
   }
 
   private searchableFields(amountSearchQueryIncludes, modelAttributes) {
