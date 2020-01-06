@@ -16,7 +16,7 @@ In addition, it is necessary to have the npm and node installed in the latest ve
 
 ```shel
 "_moduleAliases": {
-   "attiv": "./framework"
+   "attiv": "../framework"
 },
 ```
 
