@@ -1,0 +1,5 @@
+FROM elasticsearch:7.2.0
+
+RUN mkdir -p /docker/elastic/data
+RUN chmod -R g+rwx /docker/elastic
+RUN chown -R 1000:1000 /docker/elastic

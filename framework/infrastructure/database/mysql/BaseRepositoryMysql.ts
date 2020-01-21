@@ -8,23 +8,20 @@ import { messages } from 'attiv';
 export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
   private model: any;
   private DbContext: DbContext;
-  private paginateParams: IQueryRequest;
-  private _user: any;
+  private optionalParams: IQueryRequest;
 
   /**
    *
-   * @param user Esta informacao e utilizada no log de auditoria para identificar quem esta alterando os dados
    * @param model Object modelo que sera usado para realizar as operacoes no banco de dados
    * @param DbContext Contexto do banco para controle de transacao
-   * @param paginateParams Parametros enviados na requisicao, que sao usados para paginacao e filtro
+   * @param optionalParams Parametros enviados na requisicao, que sao usados para paginacao, filtro e log de auditoria
    */
-  constructor(model: any, DbContext: DbContext, user: any, paginateParams?: IQueryRequest) {
+  constructor(model: any, DbContext: DbContext, optionalParams?: IQueryRequest) {
     this.model = model;
     this.DbContext = DbContext;
-    this._user = user;
 
-    if (paginateParams === undefined) {
-      this.paginateParams = {
+    if (optionalParams === undefined) {
+      this.optionalParams = {
         page: 1,
         limit: parseInt(process.env.LIMIT_PAGINATION) || 10,
         offset: 0,
@@ -33,11 +30,12 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         includes: [],
         order: [],
         includesRequired: false,
+        user: {},
       };
     } else {
-      paginateParams.limit = this.verifyPageLimit(paginateParams.limit);
-      paginateParams.pageSize = this.verifyPageLimit(paginateParams.pageSize);
-      this.paginateParams = paginateParams;
+      optionalParams.limit = this.verifyPageLimit(optionalParams.limit);
+      optionalParams.pageSize = this.verifyPageLimit(optionalParams.pageSize);
+      this.optionalParams = optionalParams;
     }
   }
 
@@ -49,17 +47,17 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     const result = await this.model.findAndCountAll({
       transaction: this.DbContext.getTransaction(),
       ...queryBuilder,
-      offset: this.paginateParams.offset,
-      limit: this.paginateParams.limit,
-      order: this.paginateParams.order,
+      offset: this.optionalParams.offset,
+      limit: this.optionalParams.limit,
+      order: this.optionalParams.order,
     });
 
     const data = {
       paginate: true,
       total: result.count,
-      page: this.paginateParams.page,
-      pageSize: this.paginateParams.pageSize,
-      pages: Math.ceil(result.count / this.paginateParams.pageSize),
+      page: this.optionalParams.page,
+      pageSize: this.optionalParams.pageSize,
+      pages: Math.ceil(result.count / this.optionalParams.pageSize),
       data: result.rows,
     };
 
@@ -77,7 +75,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   async getAll() {
     const modelAttributes = this.model['rawAttributes'];
 
-    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
+    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.optionalParams);
 
     const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes);
 
@@ -92,7 +90,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   async create(item: T) {
     return await this.model.create(item, {
       transaction: this.DbContext.getTransaction(),
-      user: this._user,
+      user: this.optionalParams.user,
     });
   }
 
@@ -103,7 +101,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       },
       individualHooks: true,
       transaction: this.DbContext.getTransaction(),
-      user: this._user,
+      user: this.optionalParams.user,
     });
   }
 
@@ -112,7 +110,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       where: { id },
       individualHooks: true,
       transaction: this.DbContext.getTransaction(),
-      user: this._user,
+      user: this.optionalParams.user,
     });
   }
 
@@ -123,7 +121,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   async findOne(id: string) {
     const modelAttributes = this.model['rawAttributes'];
 
-    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
+    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.optionalParams);
 
     const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes);
 

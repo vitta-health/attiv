@@ -38,6 +38,7 @@ export function PaginateHandler(request: any, response: Response, next: NextFunc
     fields: [],
     includes: request.query.includes,
     includesRequired: includesRequiredFilter,
+    user: {},
   };
 
   Object.keys(request.query).forEach(keys => {
@@ -48,7 +49,7 @@ export function PaginateHandler(request: any, response: Response, next: NextFunc
   });
 
   request.container.register({
-    paginateParams: asValue(queryFilter),
+    optionalParams: asValue(queryFilter),
   });
   return next();
 }
