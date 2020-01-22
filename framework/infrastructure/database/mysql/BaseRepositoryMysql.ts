@@ -64,7 +64,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   }
 
   private verifyPageLimit(valor: number): number {
-    return valor > parseInt(process.env.LIMIT_PAGINATION) || 10 ? parseInt(process.env.LIMIT_PAGINATION) || 10 : valor;
+    const limit = parseInt(process.env.LIMIT_PAGINATION) || 10;
+    return valor > limit ? limit : valor;
   }
 
   /**
