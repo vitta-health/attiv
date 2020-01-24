@@ -15,6 +15,7 @@ deploy:
   provider: npm
   email: elvis.souza@vitta.me
   skip_cleanup: true
+  edge: true
   api_key:
     secure: ${VITTA_KEY_NPM}
   on:
