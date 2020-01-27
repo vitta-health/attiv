@@ -3,7 +3,8 @@ import { asValue } from 'awilix';
 import IQueryRequest from '../../crosscutting/util/IQueryRequest';
 
 export function PaginateHandler(request: any, response: Response, next: NextFunction) {
-  const fieldDefaultFilter = ['limit', 'page', 'includes', 'fields', 'order', 'includesRequired'];
+  const fieldDefaultFilter = ['limit', 'page', 'includes', 'fields', 'order',
+    'includesRequired', 'includeAttributes', 'attributes', 'distinct'];
 
   const pageSize = parseInt(request.query.limit) || parseInt(process.env.LIMIT_PAGINATION) || 10;
   const page = parseInt(request.query.page) || 1;
@@ -38,6 +39,9 @@ export function PaginateHandler(request: any, response: Response, next: NextFunc
     fields: [],
     includes: request.query.includes,
     includesRequired: includesRequiredFilter,
+    attributes: request.query.attributes,
+    includeAttributes: request.query.includeAttributes,
+    distinct: request.query.distinct,
   };
 
   Object.keys(request.query).forEach(keys => {
