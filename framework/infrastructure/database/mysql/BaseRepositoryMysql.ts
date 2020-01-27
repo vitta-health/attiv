@@ -7,7 +7,7 @@ import { messages } from 'attiv';
 
 export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
   private model: Model<any, any>;
-  private DbContext: DbContext;
+  protected DbContext: DbContext;
   private paginateParams: IQueryRequest;
 
   /**
@@ -30,6 +30,9 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         includes: [],
         order: [],
         includesRequired: false,
+        attributes: [],
+        includeAttributes: [],
+        distinct: false,
       };
     } else {
       paginateParams.limit = this.verifyPageLimit(paginateParams.limit);
@@ -78,7 +81,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
     const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
 
-    const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes);
+    const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes, this.paginateParams);
 
     const filter = {
       ...searchableFields,
@@ -117,7 +120,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
     const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
 
-    const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes);
+    const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes, this.paginateParams);
 
     const filter = {
       ...searchableFields,
@@ -139,13 +142,13 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     await this.DbContext.rollback();
   }
 
-  private searchableFields(amountSearchQueryIncludes, modelAttributes) {
+  searchableFields(amountSearchQueryIncludes, modelAttributes, queryParams: IQueryRequest) {
     const searchableFields = {};
 
     const excludeAttributes = [];
 
     Object.keys(modelAttributes).forEach(key => {
-      if (modelAttributes[key]['hidden'] === true) {
+      if (modelAttributes[key]['hidden'] === true || (queryParams.attributes && !queryParams.attributes.includes(key))) {
         excludeAttributes.push(key);
       }
     });
@@ -188,11 +191,14 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       }
     });
 
+    const distinct = !!queryParams.distinct;
+
     const queryBuilder = {
       attributes: {
         exclude: excludeAttributes,
       },
       where: { ...searchableFields },
+      distinct,
     };
 
     return queryBuilder;
@@ -231,10 +237,10 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
           exclude: [],
         };
 
-        const modelAttributes = model['rawAttributes'];
+        const modelAttributes = !query.attributes ? query.attributes : model['rawAttributes'];
 
         Object.keys(modelAttributes).forEach(key => {
-          if (modelAttributes[key]['hidden'] === true) {
+          if (modelAttributes[key]['hidden'] === true || (query.includeAttributes && !query.includeAttributes.includes(key))) {
             include['attributes'].exclude.push(key);
           }
         });
@@ -247,10 +253,6 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
           const [key, value] = query.split('=');
           const [, relationValue] = key.split('.');
-
-          if (include['attributes'].exclude.indexOf(relationValue) >= 0) {
-            throw new APIError(`${key} - ${messages.Filter.FIELD_HIDDEN_CONTEXT}`);
-          }
 
           if (!value.length) {
             throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
