@@ -18,7 +18,7 @@ container
   .register({
     router: asFunction(routerApp).singleton(),
     DbContext: asClass(DbContext).scoped(),
-    DbContextMongo: asClass(DbContextMongo).scoped(),
+    DbContextMongo: asClass(DbContextMongo).singleton(),
   });
 
 container.register({
