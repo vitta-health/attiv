@@ -11,9 +11,7 @@ export default class DbContextMongo {
   connect(initialize) {
     if (initialize === 'true') {
       try {
-        const CONNECTION_STRING = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${
-          process.env.MONGO_HOST
-        }:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=${process.env.MONGO_AUTH_DB}`;
+        const CONNECTION_STRING = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=${process.env.MONGO_AUTH_DB}&poolSize=10`;
 
         mongoose.connect(CONNECTION_STRING);
 
