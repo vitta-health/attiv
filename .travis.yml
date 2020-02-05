@@ -6,14 +6,17 @@ node_js:
 script: true
 
 after_success:
+  - npm version patch -m "Updating to %s"
   - npm install
   - npm run build
   - npm run copy
+  - git push origin master
+  - git push --tags
 before_deploy:
   - cd lib
 deploy:
   provider: npm
-  email: elvis.souza@vitta.me
+  email: ti@vitta.me
   skip_cleanup: true
   api_key:
     secure: ${VITTA_KEY_NPM}
