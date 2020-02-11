@@ -9,7 +9,7 @@ after_success:
   - npm run build
   - npm run copy
 before_deploy:
-  - npm version patch -m "chore: Update version to %s"
+  - "npm version patch -m 'chore: Update version to %s'"
   - cd lib
 deploy:
   - provider: npm
