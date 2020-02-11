@@ -14,7 +14,8 @@ before_deploy:
 deploy:
   - provider: npm
     email: ti@vitta.me
-    cleanup: true
+    skip_cleanup: true
+    edge: true
     api_key:
       secure: ${VITTA_KEY_NPM}
   - provider: releases
@@ -22,9 +23,10 @@ deploy:
       secure: ${GITHUB_OAUTH_TOKEN}
     file_glob: true
     file: ./*
-    cleanup: true
+    skip_cleanup: true
     draft: true
 after_deploy:
+  - cd ..
   - git push origin master
   - git push --tags
 
