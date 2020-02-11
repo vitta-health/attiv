@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
+  "_moduleAliases": {
+    "attiv": "../framework"
+  },
   "scripts": {
+    "postinstall": "link-module-alias",
     "build": "tsc",
     "dev": "NODE_ENV=development nodemon ./src/index.ts",
     "prod": "npm run build && npm run start",
@@ -21,9 +25,11 @@
     "express": "^4.16.4",
     "joi": "^14.3.1",
     "log4js": "^4.0.2",
+    "module-alias": "^2.2.2",
     "morgan": "^1.9.1",
     "mysql2": "^1.6.5",
-    "sequelize": "^5.3.3"
+    "sequelize": "^5.3.3",
+    "link-module-alias": "^1.1.6"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",

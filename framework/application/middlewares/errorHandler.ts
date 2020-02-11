@@ -14,7 +14,7 @@ export function ErrorHandler(err: any, req: Request, res, next: NextFunction) {
 
   response.status = 500;
   response.message = messages.errorHandler.SERVER_ERROR;
-  response.detais = err.stack;
+  response.details = err.stack;
 
   if (err instanceof NotFoundError) {
     response.status = 404;
@@ -29,7 +29,7 @@ export function ErrorHandler(err: any, req: Request, res, next: NextFunction) {
   if (err instanceof ValidationError) {
     response.status = 400;
     response.message = err.message || messages.errorHandler.VALIDATION_ERROR;
-    response.detais = err.errors.details || err.errors || {};
+    response.details = err.errors.details || err.errors || {};
   }
 
   if (err instanceof BusinessError) {
@@ -40,7 +40,7 @@ export function ErrorHandler(err: any, req: Request, res, next: NextFunction) {
   if (err instanceof APIError) {
     response.status = err.status || 400;
     response.message = err.message || messages.errorHandler.API_ERROR;
-    response.detais = err.stack;
+    response.details = err.stack;
   }
 
   logger.error(util.inspect(response));
