@@ -10,10 +10,8 @@ export function responseHandler(req: any, res, next: NextFunction) {
   const json_ = res.json;
   let DbContext;
 
-  try {
+  if (req.container && req.container.has('DbContext')) {
     DbContext = req.container.resolve('DbContext') as DbContext;
-  } catch (err) {
-    logger.info('This project doens\'t contains a DbContext class')
   }
 
   res.json = function (data) {
