@@ -10,6 +10,7 @@ after_success:
   - npm run build
   - npm run copy
 before_deploy:
+  if: branch = master
   - npm version patch -m "chore: Update version to %s"
   - cd lib
 deploy:
