@@ -9,19 +9,14 @@ after_success:
   - npm run build
   - npm run copy
 before_deploy:
-  if: branch = master
   - npm version patch -m "chore: Update version to %s"
   - cd lib
 deploy:
-  if: branch = master
   - provider: npm
     email: ti@vitta.me
     skip_cleanup: true
     api_key:
       secure: ${VITTA_KEY_NPM}
-    on:
-      branch: master
-      repo: vitta-health/attiv
   - provider: releases
     api_key: 
       secure: ${GITHUB_OAUTH_TOKEN}
@@ -30,8 +25,14 @@ deploy:
     skip_cleanup: true
     draft: true
 after_deploy:
-  if: branch = master
   - git push origin master
   - git push --tags
 
+stages:
+  - name: deploy
+    if: branch = master
+  - name: after_deploy
+    if: branch = master
+  - name: before_deploy
+    if: branch = master
 
