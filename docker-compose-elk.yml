@@ -1,0 +1,57 @@
+version: '2'
+
+services:
+  elastic:
+    build:
+      context: .
+      dockerfile: ./dockerfile.elastic
+    container_name: elastic
+    ports: 
+      - 9200:9200 
+      - 9300:9300
+    environment:
+      - http.host=0.0.0.0
+      - discovery.type=single-node
+    volumes: 
+      - /docker/elastic/data:/usr/share/elasticsearch/data
+    networks:
+      vpcattiv:
+        ipv4_address: 10.1.1.2
+  logstash:
+    build:
+      context: .
+      dockerfile: ./dockerfile.logstash
+    container_name: logstash
+    environment: 
+      - XPACK.MONITORING.ELASTICSEARCH.HOSTS=http://10.1.1.2:9200
+    depends_on:
+      - elastic
+    restart: always 
+    networks:
+      vpcattiv:
+        ipv4_address: 10.1.1.3
+  kibana:
+    image: kibana:7.2.0
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment: 
+      - ELASTICSEARCH_HOSTS=http://10.1.1.2:9200
+      - XPACK_GRAPH_ENABLED=true
+      - XPACK_WATCHER_ENABLED=true
+      - XPACK_ML_ENABLED=true
+      - XPACK_MONITORING_ENABLED=true
+      - XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED
+    depends_on:
+      - elastic
+    restart: always 
+    networks:
+      vpcattiv:
+        ipv4_address: 10.1.1.4
+networks:
+  vpcattiv:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.1.1.0/16
+          gateway: 10.1.1.1

@@ -8,4 +8,7 @@ export default interface IQueryRequest {
   order: Array<any>;
   includesRequired: boolean;
   user: any;
+  attributes: Array<String>;
+  includeAttributes: Array<String>;
+  distinct: boolean;
 }

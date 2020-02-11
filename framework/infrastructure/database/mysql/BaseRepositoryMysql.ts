@@ -6,22 +6,22 @@ import { APIError } from 'attiv';
 import { messages } from 'attiv';
 
 export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
+  private paginateParams: IQueryRequest;
   private model: any;
-  private DbContext: DbContext;
-  private optionalParams: IQueryRequest;
+  protected DbContext: DbContext;
 
   /**
    *
    * @param model Object modelo que sera usado para realizar as operacoes no banco de dados
    * @param DbContext Contexto do banco para controle de transacao
-   * @param optionalParams Parametros enviados na requisicao, que sao usados para paginacao, filtro e log de auditoria
+   * @param paginateParams Parametros enviados na requisicao, que sao usados para paginacao, filtro e log de auditoria
    */
-  constructor(model: any, DbContext: DbContext, optionalParams?: IQueryRequest) {
+  constructor(model: any, DbContext: DbContext, paginateParams?: IQueryRequest) {
     this.model = model;
     this.DbContext = DbContext;
 
-    if (optionalParams === undefined) {
-      this.optionalParams = {
+    if (paginateParams === undefined) {
+      this.paginateParams = {
         page: 1,
         limit: parseInt(process.env.LIMIT_PAGINATION) || 10,
         offset: 0,
@@ -31,11 +31,14 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         order: [],
         includesRequired: false,
         user: {},
+        attributes: [],
+        includeAttributes: [],
+        distinct: false,
       };
     } else {
-      optionalParams.limit = this.verifyPageLimit(optionalParams.limit);
-      optionalParams.pageSize = this.verifyPageLimit(optionalParams.pageSize);
-      this.optionalParams = optionalParams;
+      paginateParams.limit = this.verifyPageLimit(paginateParams.limit);
+      paginateParams.pageSize = this.verifyPageLimit(paginateParams.pageSize);
+      this.paginateParams = paginateParams;
     }
   }
 
@@ -47,17 +50,17 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     const result = await this.model.findAndCountAll({
       transaction: this.DbContext.getTransaction(),
       ...queryBuilder,
-      offset: this.optionalParams.offset,
-      limit: this.optionalParams.limit,
-      order: this.optionalParams.order,
+      offset: this.paginateParams.offset,
+      limit: this.paginateParams.limit,
+      order: this.paginateParams.order,
     });
 
     const data = {
       paginate: true,
       total: result.count,
-      page: this.optionalParams.page,
-      pageSize: this.optionalParams.pageSize,
-      pages: Math.ceil(result.count / this.optionalParams.pageSize),
+      page: this.paginateParams.page,
+      pageSize: this.paginateParams.pageSize,
+      pages: Math.ceil(result.count / this.paginateParams.pageSize),
       data: result.rows,
     };
 
@@ -65,7 +68,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   }
 
   private verifyPageLimit(valor: number): number {
-    return valor > parseInt(process.env.LIMIT_PAGINATION) || 10 ? parseInt(process.env.LIMIT_PAGINATION) || 10 : valor;
+    const limit = parseInt(process.env.LIMIT_PAGINATION) || 10;
+    return valor > limit ? limit : valor;
   }
 
   /**
@@ -75,9 +79,9 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   async getAll() {
     const modelAttributes = this.model['rawAttributes'];
 
-    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.optionalParams);
+    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
 
-    const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes);
+    const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes, this.paginateParams);
 
     const filter = {
       ...searchableFields,
@@ -90,7 +94,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   async create(item: T) {
     return await this.model.create(item, {
       transaction: this.DbContext.getTransaction(),
-      user: this.optionalParams.user,
+      user: this.paginateParams.user,
     });
   }
 
@@ -101,7 +105,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       },
       individualHooks: true,
       transaction: this.DbContext.getTransaction(),
-      user: this.optionalParams.user,
+      user: this.paginateParams.user,
     });
   }
 
@@ -110,7 +114,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       where: { id },
       individualHooks: true,
       transaction: this.DbContext.getTransaction(),
-      user: this.optionalParams.user,
+      user: this.paginateParams.user,
     });
   }
 
@@ -121,9 +125,9 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   async findOne(id: string) {
     const modelAttributes = this.model['rawAttributes'];
 
-    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.optionalParams);
+    const amountSearchQueryIncludes = this.amountSearchQueryIncludes(this.paginateParams);
 
-    const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes);
+    const searchableFields = this.searchableFields(amountSearchQueryIncludes, modelAttributes, this.paginateParams);
 
     const filter = {
       ...searchableFields,
@@ -147,13 +151,13 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
     await this.DbContext.rollback();
   }
 
-  private searchableFields(amountSearchQueryIncludes, modelAttributes) {
+  searchableFields(amountSearchQueryIncludes, modelAttributes, queryParams: IQueryRequest) {
     const searchableFields = {};
 
     const excludeAttributes = [];
 
     Object.keys(modelAttributes).forEach(key => {
-      if (modelAttributes[key]['hidden'] === true) {
+      if (modelAttributes[key]['hidden'] === true || (queryParams.attributes && !queryParams.attributes.includes(key))) {
         excludeAttributes.push(key);
       }
     });
@@ -163,6 +167,10 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
       if (excludeAttributes.indexOf(key) >= 0) {
         throw new APIError(`${key} - ${messages.Filter.FIELD_HIDDEN_CONTEXT}`);
+      }
+
+      if (!modelAttributes[key]) {
+        throw new APIError(`${key} - ${messages.Filter.FIELD_NOT_FOUND}`);
       }
 
       if (!value.length) {
@@ -196,11 +204,14 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       }
     });
 
+    const distinct = !!queryParams.distinct;
+
     const queryBuilder = {
       attributes: {
         exclude: excludeAttributes,
       },
       where: { ...searchableFields },
+      distinct,
     };
 
     return queryBuilder;
@@ -239,10 +250,10 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
           exclude: [],
         };
 
-        const modelAttributes = model['rawAttributes'];
+        const modelAttributes = !query.attributes ? query.attributes : model['rawAttributes'];
 
         Object.keys(modelAttributes).forEach(key => {
-          if (modelAttributes[key]['hidden'] === true) {
+          if (modelAttributes[key]['hidden'] === true || (query.includeAttributes && !query.includeAttributes.includes(key))) {
             include['attributes'].exclude.push(key);
           }
         });
@@ -255,10 +266,6 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
           const [key, value] = query.split('=');
           const [, relationValue] = key.split('.');
-
-          if (include['attributes'].exclude.indexOf(relationValue) >= 0) {
-            throw new APIError(`${key} - ${messages.Filter.FIELD_HIDDEN_CONTEXT}`);
-          }
 
           if (!value.length) {
             throw new APIError(`${key} - ${messages.Filter.VALUE_IS_NULL}`);
