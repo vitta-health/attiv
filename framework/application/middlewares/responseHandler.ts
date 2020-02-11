@@ -10,7 +10,7 @@ export function responseHandler(req: any, res, next: NextFunction) {
   const json_ = res.json;
   let DbContext;
 
-  if (req.container && req.container.has('DbContext')) {
+  if (req.container && req.container.has('db')) {
     DbContext = req.container.resolve('DbContext') as DbContext;
   }
 
