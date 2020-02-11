@@ -3,24 +3,32 @@ language: node_js
 node_js:
   - '11.6.0'
 
+before_install:
+  - echo -e "machine github.com\n  login $GITHUB_OAUTH_TOKEN" > ~/.netrc
+  - ssh -T git@github.com
 after_success:
-  - npm version patch -m "Updating to %s"
   - npm run build
   - npm run copy
 before_deploy:
+  - npm version patch -m "chore: Update version to %s"
   - cd lib
 deploy:
   if: branch = master
-  provider: npm
-  email: ti@vitta.me
-  skip_cleanup: true
-  edge: true
-  api_key:
-    secure: ${VITTA_KEY_NPM}
-  on:
-    branch: master
-    tags: true
-    repo: vitta-health/attiv
+  - provider: npm
+    email: ti@vitta.me
+    skip_cleanup: true
+    api_key:
+      secure: ${VITTA_KEY_NPM}
+    on:
+      branch: master
+      repo: vitta-health/attiv
+  - provider: releases
+    api_key: 
+      secure: ${GITHUB_OAUTH_TOKEN}
+    file_glob: true
+    file: lib/*
+    skip_cleanup: true
+    draft: true
 after_deploy:
   if: branch = master
   - git push origin master
