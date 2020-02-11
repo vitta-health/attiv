@@ -5,7 +5,6 @@ node_js:
 
 before_install:
   - echo -e "machine github.com\n  login $GITHUB_OAUTH_TOKEN" > ~/.netrc
-  - ssh -T git@github.com
 after_success:
   - npm run build
   - npm run copy
