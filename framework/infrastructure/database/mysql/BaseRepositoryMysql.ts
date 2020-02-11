@@ -2,8 +2,8 @@ import IRepositoryGeneric from '../IRepositoryGeneric';
 import { FindOptions } from 'sequelize';
 import DbContext from '../DbContext';
 import IQueryRequest from '../../../crosscutting/util/IQueryRequest';
-import { APIError } from 'attiv';
-import { messages } from 'attiv';
+import { APIError } from '../../../crosscutting/exceptions/APIError';
+import messages from '../../../crosscutting/messages/message';
 
 export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
   private paginateParams: IQueryRequest;

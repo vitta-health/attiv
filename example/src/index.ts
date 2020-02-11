@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import { container, Application } from 'attiv';
 const { asClass, asValue } = require('awilix');
 import TaskController from './application/controllers/TaskController';
