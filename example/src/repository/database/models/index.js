@@ -46,7 +46,7 @@ const operatorsAliases = {
   $col: Op.col,
 };
 
-if (process.env.AUDIT_LOG) {
+if (process.env.AUDIT_LOG == 'true') {
   const sequelizeConfig = new AuditLoggerSequelizeConfig();
   config.define.hooks = sequelizeConfig.hooks;
 }

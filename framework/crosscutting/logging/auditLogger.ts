@@ -13,7 +13,7 @@ export default class AudditLogger {
 
   static _queueName = process.env.AUDIT_LOG_QUEUE_NAME;
 
-  constructor() {}
+  constructor() { }
 
   static async register(action: DBOperationType, model: any, options: any) {
     try {
@@ -26,7 +26,7 @@ export default class AudditLogger {
       }
     } catch (error) {
       logger.error(
-        'Error registering audit log. Action=' + action + ' Options= ' + inspect(options) + ' ' + JSON.stringify(error),
+        'Error registering audit log. Action= ${action} Options= ' + inspect(options) + ' ' + JSON.stringify(error),
       );
     }
   }
