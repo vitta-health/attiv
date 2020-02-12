@@ -6,10 +6,10 @@ node_js:
 before_install:
   - echo -e "machine github.com\n  login $GITHUB_OAUTH_TOKEN" > ~/.netrc
 after_success:
+  - "npm version patch -m 'chore: Update version to %s'"
   - npm run build
   - npm run copy
 before_deploy:
-  - "npm version patch -m 'chore: Update version to %s'"
   - cd lib
 deploy:
   - provider: npm
