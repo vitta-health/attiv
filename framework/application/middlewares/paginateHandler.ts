@@ -39,6 +39,7 @@ export function PaginateHandler(request: any, response: Response, next: NextFunc
     fields: [],
     includes: request.query.includes,
     includesRequired: includesRequiredFilter,
+    user: {},
     attributes: request.query.attributes,
     includeAttributes: request.query.includeAttributes,
     distinct: request.query.distinct,

@@ -1,20 +1,20 @@
 import IRepositoryGeneric from '../IRepositoryGeneric';
-import { Model, FindOptions } from 'sequelize';
+import { FindOptions } from 'sequelize';
 import DbContext from '../DbContext';
 import IQueryRequest from '../../../crosscutting/util/IQueryRequest';
 import { APIError } from '../../../crosscutting/exceptions/APIError';
 import messages from '../../../crosscutting/messages/message';
 
 export default abstract class BaseRepositoryMysql<T> implements IRepositoryGeneric<T> {
-  private model: Model<any, any>;
-  protected DbContext: DbContext;
   private paginateParams: IQueryRequest;
+  private model: any;
+  protected DbContext: DbContext;
 
   /**
    *
    * @param model Object modelo que sera usado para realizar as operacoes no banco de dados
    * @param DbContext Contexto do banco para controle de transacao
-   * @param paginateParams Parametros enviados na requisicao, que sao usados para paginacao e filtro
+   * @param paginateParams Parametros enviados na requisicao, que sao usados para paginacao, filtro e log de auditoria
    */
   constructor(model: any, DbContext: DbContext, paginateParams?: IQueryRequest) {
     this.model = model;
@@ -30,6 +30,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         includes: [],
         order: [],
         includesRequired: false,
+        user: {},
         attributes: [],
         includeAttributes: [],
         distinct: false,
@@ -75,7 +76,6 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
    * Metodo responsavel por buscar todas as informacoes na base de dados
    * e retornar os dados paginado, com ou sem filtro, com ou sem includes e com ou ser ordenacao
    */
-
   async getAll() {
     const modelAttributes = this.model['rawAttributes'];
 
@@ -92,7 +92,10 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
   }
 
   async create(item: T) {
-    return await this.model.create(item, { transaction: this.DbContext.getTransaction() });
+    return await this.model.create(item, {
+      transaction: this.DbContext.getTransaction(),
+      user: this.paginateParams.user,
+    });
   }
 
   async update(id: string, item: T) {
@@ -100,14 +103,18 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       where: {
         id: id,
       },
+      individualHooks: true,
       transaction: this.DbContext.getTransaction(),
+      user: this.paginateParams.user,
     });
   }
 
   async delete(id: string) {
     return await this.model.destroy({
       where: { id },
+      individualHooks: true,
       transaction: this.DbContext.getTransaction(),
+      user: this.paginateParams.user,
     });
   }
 
@@ -126,6 +133,8 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
       ...searchableFields,
       include: amountSearchQueryIncludes.queryIncludesList,
     };
+
+    filter['where'] = { id: +id };
 
     return await this.model.findOne({ ...filter });
   }
@@ -158,6 +167,10 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
 
       if (excludeAttributes.indexOf(key) >= 0) {
         throw new APIError(`${key} - ${messages.Filter.FIELD_HIDDEN_CONTEXT}`);
+      }
+
+      if (!modelAttributes[key]) {
+        throw new APIError(`${key} - ${messages.Filter.FIELD_NOT_FOUND}`);
       }
 
       if (!value.length) {

@@ -5,6 +5,7 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const config = require('../config/database.js');
+const { AuditLoggerSequelizeConfig } = require('attiv');
 const db = {};
 
 const Op = Sequelize.Op;
@@ -44,6 +45,11 @@ const operatorsAliases = {
   $values: Op.values,
   $col: Op.col,
 };
+
+if (process.env.AUDIT_LOG == 'true') {
+  const sequelizeConfig = new AuditLoggerSequelizeConfig();
+  config.define.hooks = sequelizeConfig.hooks;
+}
 
 let sequelize = new Sequelize({ ...config, operatorsAliases });
 

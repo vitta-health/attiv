@@ -1,0 +1,16 @@
+FROM logstash:7.2.0
+
+# Install plugin to connect to SQS.
+RUN /opt/logstash/bin/logstash-plugin install logstash-input-sqs
+
+# Install plugin of json filter.
+RUN /opt/logstash/bin/logstash-plugin install logstash-filter-json
+
+# Install plugin to output 
+RUN /opt/logstash/bin/logstash-plugin install logstash-output-elasticsearch
+
+RUN mkdir -p /usr/share/logstash/config/
+RUN rm -f /usr/share/logstash/pipeline/logstash.conf
+RUN mkdir -p /usr/share/logstash/pipeline/
+
+COPY ./framework/infrastructure/logging/logstash/logstashexample.conf /usr/share/logstash/pipeline/logstash.conf
