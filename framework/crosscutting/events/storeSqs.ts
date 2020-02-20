@@ -104,10 +104,12 @@ export default class StoreSQS implements IStoreBase {
         attributes = {
           ReceiveMessageWaitTimeSeconds: this.WaitTimeSeconds.toString(),
           FifoQueue: 'true',
+          VisibilityTimeout: '43200',
         };
       } else {
         attributes = {
           ReceiveMessageWaitTimeSeconds: this.WaitTimeSeconds.toString(),
+          VisibilityTimeout: '43200',
         };
       }
 
@@ -195,7 +197,7 @@ export default class StoreSQS implements IStoreBase {
         this.deleteMessage(nameHandler, message.ReceiptHandle);
         return Promise.all(message).then(() => result);
       })
-      .catch(error => {});
+      .catch(error => { });
   }
 
   async poll(nameHandler, handler, options = {}) {
