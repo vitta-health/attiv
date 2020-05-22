@@ -30,6 +30,7 @@ import BaseEntity from './domain/generics/BaseEntity';
 import IRepositoryGeneric from './infrastructure/database/IRepositoryGeneric';
 import BaseRepositoryMysql from './infrastructure/database/mysql/BaseRepositoryMysql';
 import BaseRepositoryMongo from './infrastructure/database/mongodb/BaseRepositoryMongo';
+import BaseRepositoryDynamo from './infrastructure/database/dynamodb/BaseRepositoryDynamo';
 import Server from './application/server';
 import storeBase from './crosscutting/events/storeBase';
 import Metadata from './crosscutting/events/integration/metadata';
@@ -38,6 +39,7 @@ import StoreRabbitMQ from './crosscutting/events/storeRabbitMQ';
 import Orchestration from './crosscutting/events/orchestration';
 import StoreType from './crosscutting/events/storeTypes';
 import DbContextMongo from './infrastructure/database/mongodb/DbContextMongo';
+import DbContextDynamo from './infrastructure/database/dynamodb/DbContextDynamo';
 import AuditLoggerSequelizeConfig from './infrastructure/database/AuditLoggerSequelizeConfig';
 
 export {
@@ -65,6 +67,7 @@ export {
   IRepositoryGeneric,
   BaseRepositoryMysql,
   BaseRepositoryMongo,
+  BaseRepositoryDynamo,
   BaseEntity,
   storeBase,
   Metadata,
@@ -73,5 +76,6 @@ export {
   Orchestration,
   StoreType,
   DbContextMongo,
+  DbContextDynamo,
   AuditLoggerSequelizeConfig,
 };
