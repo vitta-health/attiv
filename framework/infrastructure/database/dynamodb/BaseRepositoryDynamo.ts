@@ -9,7 +9,28 @@ export default abstract class BaseRepositoryDynamo<T> implements IRepositoryGene
 
   constructor(model: any, paginateParams?: IQueryRequest) {
     this.model = model;
-    this.paginateParams = paginateParams;
+
+    if (paginateParams === undefined) {
+      this.paginateParams = {
+        page: 1,
+        limit: parseInt(process.env.LIMIT_PAGINATION) || 10,
+        offset: 0,
+        pageSize: parseInt(process.env.LIMIT_PAGINATION) || 10,
+        fields: [],
+        includes: [],
+        order: [],
+        includesRequired: false,
+        user: {},
+        attributes: [],
+        includeAttributes: [],
+        distinct: false,
+        exclusiveStartKey: ''
+      };
+    } else {
+      paginateParams.limit = this.verifyPageLimit(paginateParams.limit);
+      paginateParams.pageSize = this.verifyPageLimit(paginateParams.pageSize);
+      this.paginateParams = paginateParams;
+    }
   }
 
   create(item: T) {
@@ -29,13 +50,18 @@ export default abstract class BaseRepositoryDynamo<T> implements IRepositoryGene
   }
 
   async getAll() {
-    let allData = []
     let result = [];
     let totalItems = 0;
-    const { page, pageSize, fields } = this.paginateParams;
+    const { fields, limit, exclusiveStartKey } = this.paginateParams;
 
     if (!fields.length) {
-      result = await this.model.scan().loadAll().limit(pageSize).exec().promise();
+      totalItems = await this.model.scan().select('COUNT').exec().promise();
+
+      if (exclusiveStartKey) {
+        result = await this.model.scan().startKey(exclusiveStartKey).limit(limit).exec().promise();
+      } else {
+        result = await this.model.scan().limit(limit).exec().promise();
+      }
 
     } else {
       const obj = {};
@@ -49,20 +75,28 @@ export default abstract class BaseRepositoryDynamo<T> implements IRepositoryGene
       const attributeValues = this.getExpressionAttributeValues(obj);
       const filterExpression = this.getFilterExpression(attributeNames);
 
-      result = await this.model.scan().filterExpression(filterExpression)
+      totalItems = await this.model.scan().filterExpression(filterExpression)
         .expressionAttributeValues(attributeValues)
-        .expressionAttributeNames(attributeNames).exec().promise();
+        .expressionAttributeNames(attributeNames).select('COUNT').exec().promise();
+
+      if (exclusiveStartKey) {
+        result = await this.model.scan().filterExpression(filterExpression)
+          .expressionAttributeValues(attributeValues)
+          .expressionAttributeNames(attributeNames).startKey(exclusiveStartKey).limit(limit).exec().promise();
+      } else {
+        result = await this.model.scan().filterExpression(filterExpression)
+          .expressionAttributeValues(attributeValues)
+          .expressionAttributeNames(attributeNames).limit(limit).loadAll().exec().promise();
+      }
 
     }
 
-    result.forEach(page => {
-      const items = page['Items'].map(item => item.attrs);
-      totalItems += parseInt(page['Count']);
-      allData = [...allData, items];
-    });
+    const { Items, LastEvaluatedKey } = result[0];
+    const { Count } = totalItems[0];
 
-    result['data'] = allData[page - 1];
-    result['total'] = totalItems;
+    result['data'] = Items;
+    result['lastEvaluatedKey'] = LastEvaluatedKey.uuid;
+    result['total'] = Count;
 
     return this.paginate(result);
   }
@@ -94,6 +128,7 @@ export default abstract class BaseRepositoryDynamo<T> implements IRepositoryGene
         condition += ` AND begins_with(#${name}, :${name})`
       }
     });
+    console.log('condição', condition);
     return condition;
   }
 
@@ -101,13 +136,18 @@ export default abstract class BaseRepositoryDynamo<T> implements IRepositoryGene
     const data = {
       paginate: true,
       total: result.total,
-      page: this.paginateParams.page,
       pageSize: this.paginateParams.pageSize,
       pages: Math.ceil(result.total / this.paginateParams.pageSize),
       data: result.data,
+      lastEvaluatedKey: result.lastEvaluatedKey
     };
-
     return data;
+  }
+
+
+  private verifyPageLimit(valor: number): number {
+    const limit = parseInt(process.env.LIMIT_PAGINATION) || 10;
+    return valor > limit ? limit : valor;
   }
 
   beginTransaction() {

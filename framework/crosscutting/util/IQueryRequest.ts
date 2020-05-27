@@ -11,4 +11,5 @@ export default interface IQueryRequest {
   attributes: Array<String>;
   includeAttributes: Array<String>;
   distinct: boolean;
+  exclusiveStartKey: string;
 }
