@@ -17,10 +17,10 @@ deploy:
     skip_cleanup: true
     edge: true
     api_key:
-      secure: ${VITTA_KEY_NPM}
+      secure: $VITTA_KEY_NPM
   - provider: releases
     api_key:
-      secure: ${GITHUB_OAUTH_TOKEN}
+      secure: $GITHUB_OAUTH_TOKEN
     file_glob: true
     file: ./*
     skip_cleanup: true
@@ -37,4 +37,3 @@ stages:
     if: branch = master
   - name: before_deploy
     if: branch = master
-
