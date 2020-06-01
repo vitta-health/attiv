@@ -33,6 +33,7 @@ export function responseHandler(req: any, res, next: NextFunction) {
         resRequest.pages = data.pages;
         resRequest.total = data.total;
         resRequest.data = data.data;
+        resRequest.lastEvaluatedKey = data.lastEvaluatedKey;
       } else {
         resRequest.data = data;
       }

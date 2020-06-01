@@ -16,6 +16,9 @@ import EventServiceProviderExample from './EventServiceProviderExample';
 import ExerciseRepository from './repositoryMongo/exercise/ExerciseRepository';
 import ExerciseService from './domain/excercise/services/implementation/ExerciseService';
 import ExerciseController from './application/controllers/ExerciseController';
+import ClientRepository from './repositoryDynamo/client/ClientRepository';
+import ClientService from './domain/client/services/implementation/ClientService';
+import ClientController from './application/controllers/ClientController';
 
 const db = require('./repository/database/models/index.js');
 
@@ -39,6 +42,10 @@ container.register({
   exerciseRepository: asClass(ExerciseRepository).scoped(),
   exerciseService: asClass(ExerciseService).scoped(),
   exerciseController: asClass(ExerciseController).scoped(),
+
+  clientRepository: asClass(ClientRepository).scoped(),
+  clientService: asClass(ClientService).scoped(),
+  clientController: asClass(ClientController).scoped(),
   db: asValue(db),
 });
 
@@ -49,6 +56,7 @@ vittaRouter.use('/task', container.resolve('taskController').getRouter());
 vittaRouter.use('/medicine', container.resolve('medicineController').getRouter());
 vittaRouter.use('/laboratory', container.resolve('laboratoryController').getRouter());
 vittaRouter.use('/exercise', container.resolve('exerciseController').getRouter());
+vittaRouter.use('/client', container.resolve('clientController').getRouter());
 
 const app = container.resolve('app') as Application;
 
