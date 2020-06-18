@@ -37,7 +37,7 @@ export default class StoreSQS implements IStoreBase {
     });
   }
 
-  async send(nameHandler: string, metadata: Metadata) {
+  async send(nameHandler: string, metadata: Metadata): Promise<void> {
     try {
       let queueUrl = await this.getQueueUrl(nameHandler);
 
@@ -197,7 +197,7 @@ export default class StoreSQS implements IStoreBase {
         this.deleteMessage(nameHandler, message.ReceiptHandle);
         return Promise.all(message).then(() => result);
       })
-      .catch(error => { });
+      .catch(error => {});
   }
 
   async poll(nameHandler, handler, options = {}) {

@@ -41,8 +41,8 @@ export default class Orchestration implements IStoreBase {
     return this.orchestrationConfigInstance.init();
   }
 
-  send(nameHandler: string, metadata: Metadata) {
-    return this.orchestrationConfigInstance.send(nameHandler, metadata);
+  async send(nameHandler: string, metadata: Metadata): Promise<void> {
+    return await this.orchestrationConfigInstance.send(nameHandler, metadata);
   }
 
   addListener(handler: any, nameHandler?: string) {
