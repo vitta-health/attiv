@@ -95,7 +95,7 @@ export default abstract class BaseRepositoryDynamo<T> implements IRepositoryGene
     const { Count } = totalItems[0];
 
     result['data'] = Items;
-    result['lastEvaluatedKey'] = LastEvaluatedKey.uuid;
+    result['lastEvaluatedKey'] = LastEvaluatedKey ? LastEvaluatedKey.uuid : undefined;
     result['total'] = Count;
 
     return this.paginate(result);
