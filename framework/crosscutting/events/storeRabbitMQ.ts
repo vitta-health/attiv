@@ -28,7 +28,7 @@ export default class StoreRabbitMQ implements IStoreBase {
     });
   }
 
-  send(nameHandler: string, metadata: Metadata) {
+  async send(nameHandler: string, metadata: Metadata): Promise<void> {
     this.connetionRabbit.createChannel((err, channel: amqp.Channel) => {
       if (err) {
         throw new Error(util.inspect(err));

@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "declaration": true,
+    "allowJs": true,
     "paths": { "*": ["types/*"] },
     "target": "es6", //default is es5
     "module": "commonjs", //CommonJs style module in output
