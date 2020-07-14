@@ -1,7 +1,6 @@
 import { PaginateHandler } from '../middlewares/paginateHandler';
 
 const { Router } = require('express');
-const bodyParser = require('body-parser');
 
 module.exports = () => {
   const router = Router();
