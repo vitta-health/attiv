@@ -19,8 +19,8 @@ class Server {
     this.express.use(responseHandler);
     this.express.use(router);
     this.express.use(cors);
-    this.express.use(bodyParser);
-    this.express.use(bodyParser.urlencoded({ extended: false }));
+    this.express.use(bodyParser.json({ limit: '100mb' }));
+    this.express.use(bodyParser.urlencoded({ extended: false, limit: '100mb' }));
     this.express.use('/docs', express.static('docs'));
 
     // catch 404 and forward to error handler
@@ -36,7 +36,7 @@ class Server {
   }
 
   start() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const http = this.express.listen(process.env.API_PORT || 3000, () => {
         const { port } = http.address();
         console.info(`processo [${process.pid}] executando na porta ${port}`);
