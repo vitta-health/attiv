@@ -1,7 +1,6 @@
 import { PaginateHandler } from '../middlewares/paginateHandler';
 
 const { Router } = require('express');
-const bodyParser = require('body-parser');
 
 module.exports = () => {
   const router = Router();
@@ -9,7 +8,6 @@ module.exports = () => {
   router.use(PaginateHandler);
 
   const apiRouter = Router();
-  apiRouter.use(bodyParser.json());
 
   apiRouter.use('/check', (req, res, next) => {
     return res
