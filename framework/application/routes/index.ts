@@ -9,7 +9,6 @@ module.exports = () => {
   router.use(PaginateHandler);
 
   const apiRouter = Router();
-  apiRouter.use(bodyParser.json());
 
   apiRouter.use('/check', (req, res, next) => {
     return res
