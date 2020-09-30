@@ -3,5 +3,5 @@ export default class Metadata {
   idProcess: any;
   data: any;
   dateTime: string;
-  MessageDeduplicationId: string;
+  MessageDeduplicationId?: string;
 }
