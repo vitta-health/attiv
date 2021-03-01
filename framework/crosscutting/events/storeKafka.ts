@@ -36,8 +36,9 @@ export default class StoreKafka implements IStoreBase {
    * Funcao responsavel por inserir um novo registro no topico
    * @param nameHandler Nome do topico
    * @param metadata Objeto que deve ser inserido na fila
+   * @param key Identificador do objeto
    */
-  async send(nameHandler: string, metadata: Metadata) {
+  async send(nameHandler: string, metadata: Metadata, key?: string) {
     Attivlogger.info(`${messages.KAFKA.MESSAGE_SEND}: ${nameHandler}`);
 
     const producer = this.kafka.producer();
@@ -46,7 +47,7 @@ export default class StoreKafka implements IStoreBase {
 
     await producer.send({
       topic: nameHandler,
-      messages: [{ value: JSON.stringify(metadata) }],
+      messages: key ? [{ key, value: JSON.stringify(metadata) }] : [{ value: JSON.stringify(metadata) }],
     });
 
     await producer.disconnect();
