@@ -29,7 +29,7 @@ export default class StoreBase implements IStoreBase {
    * @param queueName Nome da fila
    * @param metadado Objeto que deve ser inserido na fila
    */
-  send(nameHandler: string, metadata: Metadata) {
+  async send(nameHandler: string, metadata: Metadata): Promise<void> {
     Attivlogger.info(`${messages.BASE_QUEUES.MESSAGE_SEND}: ${nameHandler}`);
     this.emitterEvent.emit(nameHandler, metadata);
   }

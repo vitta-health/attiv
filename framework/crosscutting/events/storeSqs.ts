@@ -32,12 +32,12 @@ export default class StoreSQS implements IStoreBase {
 
     bluebird.promisifyAll(this.SQS, { suffix: 'Promise' });
 
-    this.subscribes.forEach(subscribe => {
+    this.subscribes.forEach((subscribe) => {
       this.addListener(subscribe.listener, subscribe.name);
     });
   }
 
-  async send(nameHandler: string, metadata: Metadata) {
+  async send(nameHandler: string, metadata: Metadata): Promise<void> {
     try {
       let queueUrl = await this.getQueueUrl(nameHandler);
 
@@ -48,7 +48,9 @@ export default class StoreSQS implements IStoreBase {
 
       let params;
       if (this.isFifoQueue(nameHandler)) {
-        const messageDeduplicationId = String(Math.random());
+        const messageDeduplicationId = metadata.MessageDeduplicationId
+          ? metadata.MessageDeduplicationId
+          : String(Math.random());
         params = {
           MessageBody: JSON.stringify(metadata),
           QueueUrl: queueUrl,
@@ -79,11 +81,11 @@ export default class StoreSQS implements IStoreBase {
         QueueName: nameHandler,
       };
       return this.SQS.getQueueUrlPromise(params)
-        .then(data => {
+        .then((data) => {
           this.UrlChaves[nameHandler] = data.QueueUrl;
           return this.UrlChaves[nameHandler];
         })
-        .catch(error => {
+        .catch((error) => {
           Attivlogger.error(`${messages.SQS.MESSAGE_ERROR_GETURL}: ${nameHandler}`);
           return null;
         });
@@ -147,7 +149,7 @@ export default class StoreSQS implements IStoreBase {
   }
 
   async receiveMessages(nameHandler, options = {}) {
-    return this.getQueueUrl(nameHandler).then(queueUrl => {
+    return this.getQueueUrl(nameHandler).then((queueUrl) => {
       if (queueUrl == null) throw new Error(`${messages.SQS.MESSAGE_ERROR_FIND_QUEUE} '${nameHandler}'`);
 
       const params = {
@@ -161,7 +163,7 @@ export default class StoreSQS implements IStoreBase {
         let deserialized = { ReceiptHandle: '', Body: '' };
 
         if (messages.length > 0) {
-          messages.forEach(message => {
+          messages.forEach((message) => {
             try {
               deserialized.ReceiptHandle = message.ReceiptHandle;
               deserialized.Body = JSON.parse(message.Body);
@@ -180,7 +182,7 @@ export default class StoreSQS implements IStoreBase {
   }
 
   async deleteMessage(nameHandler, receiptHandle) {
-    return this.getQueueUrl(nameHandler).then(queueUrl => {
+    return this.getQueueUrl(nameHandler).then((queueUrl) => {
       if (queueUrl === null) throw new Error(`${messages.SQS.MESSAGE_ERROR_FIND_QUEUE} : ${nameHandler} `);
 
       const params = {
@@ -193,18 +195,18 @@ export default class StoreSQS implements IStoreBase {
 
   async processMessages(nameHandler, handler, message) {
     return handler(message.Body)
-      .then(result => {
+      .then((result) => {
         this.deleteMessage(nameHandler, message.ReceiptHandle);
         return Promise.all(message).then(() => result);
       })
-      .catch(error => { });
+      .catch((error) => {});
   }
 
   async poll(nameHandler, handler, options = {}) {
-    return this.receiveMessages(nameHandler, options).then(message => {
+    return this.receiveMessages(nameHandler, options).then((message) => {
       if (message) {
         Attivlogger.info(`${messages.SQS.MESSAGE_PROCESS}: ${nameHandler}`);
-        return this.processMessages(nameHandler, handler, message).then(result => {
+        return this.processMessages(nameHandler, handler, message).then((result) => {
           if (result === false) {
             return null;
           }

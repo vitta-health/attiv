@@ -9,4 +9,5 @@ export default class ResponseRequest<T> {
   status: number = 200;
   message: string = messages.successHandler.SUCCESS;
   details: any = {};
+  lastEvaluatedKey: string | null;
 }

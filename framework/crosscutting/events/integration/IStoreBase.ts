@@ -2,7 +2,7 @@ import Metadata from './metadata';
 
 export default interface IStoreBase {
   init();
-  send(nameHandler: string, metadata: Metadata, key?: string);
+  send(nameHandler: string, metadata: Metadata, key?: string) : Promise<void>;
   addListener(handler: any, nameHandler: string);
   getChannels();
   getMessagesQueue(nameHandler: string);

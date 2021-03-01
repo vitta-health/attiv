@@ -34,6 +34,7 @@ export default abstract class BaseRepositoryMysql<T> implements IRepositoryGener
         attributes: [],
         includeAttributes: [],
         distinct: false,
+        exclusiveStartKey: ''
       };
     } else {
       paginateParams.limit = this.verifyPageLimit(paginateParams.limit);
