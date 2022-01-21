@@ -27,7 +27,7 @@
     "express": "^4.16.4",
     "joi": "^14.3.1",
     "link-module-alias": "^1.1.6",
-    "log4js": "^4.0.2",
+    "log4js": "^6.4.0",
     "module-alias": "^2.2.2",
     "morgan": "^1.9.1",
     "mysql2": "^1.6.5",
